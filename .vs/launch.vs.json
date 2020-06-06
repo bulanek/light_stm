@@ -1,0 +1,47 @@
+{
+  "version": "0.2.1",
+  "configurations": [
+    {
+//      "autorun": [
+//        "target remote 127.0.0.1:3333",
+//        "symbol-file C:/Users/z003tecs/AppData/Local/Temp/light/LIGHT.ihx",
+//        "monitor reset"
+//      ],
+      "cwd": "${workspaceRoot}",
+      "externalConsole": true,
+      "logging": {
+        "trace": true,
+        "traceResponse": true,
+        "engineLogging": true
+      },
+      "miDebuggerPath": "C:\\git\\mf_dev\\Tools\\gnu_tools_arm_embedded_9_2019_q4_major\\bin\\arm-none-eabi-gdb.exe",
+      "MIMode": "gdb",
+      "name": "LIGHT.exe",
+      "program": "C:\\Users\\z003tecs\\AppData\\Local\\Temp\\light\\LIGHT.ihx",
+      "project": "CMakeLists.txt",
+      "projectTarget": "LIGHT.exe",
+      "setupCommands": [
+//        {
+//          "text": "-file-exec-and-symbols C:/Users/z003tecs/AppData/Local/Temp/light/LIGHT.ihx"
+//        },
+        {
+          "text": "target remote 127.0.0.1:3333"
+        },
+ //       {
+ //         "text": "mon reset halt"
+ //       },
+ //       {
+ //         "text": "mon reset init"
+ //       },
+        {
+          "text": "load C:/Users/z003tecs/AppData/Local/Temp/light/LIGHT.ihx"
+        }
+//        {
+//          "text": "info breakpoints"
+//        }
+      ],
+      "targetArchitecture": "arm",
+      "type": "cppdbg"
+    }
+  ]
+}
