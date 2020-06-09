@@ -6,8 +6,11 @@
 
 static void _rtcUnLock(void)
 {
-    RTC_WPR->KEY = 0xCA;
-    RTC_WPR->KEY = 0x53;
+    //RTC_WPR->KEY = 0xCA;
+    //RTC_WPR->KEY = 0x53;
+    *(volatile uint8_t*)RTC_WPR = 0xCA;
+    *(volatile uint8_t*)RTC_WPR = 0x53;
+
 }
 
 static void _rtcLock(void)

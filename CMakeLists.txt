@@ -41,18 +41,27 @@ endif()
 set(APP_BIN_NAME light_ctrl CACHE STRING "Name of application bin file")
 
 
-set(CMAKE_C_FLAGS_INIT "-mstm8")
-SET(CMAKE_EXE_LINKER_FLAGS_INIT "")
+set(CMAKE_C_FLAGS_INIT "-mstm8 --out-fmt-elf  ")
+SET(CMAKE_EXE_LINKER_FLAGS_INIT "-msoft-float --out-fmt-elf --all-callee-saves --debug --verbose --stack-auto --fverbose-asm --float-reent --no-peep ")
 add_definitions("-DTHUMB_INTERWORK")
 add_definitions("-DSTM8")
 add_definitions("-DSTM8L152")
+SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -msoft-float --out-fmt-elf --all-callee-saves --debug --verbose --stack-auto --fverbose-asm --float-reent --no-peep ")
 
 
 add_compile_options(
 		-msoft-float
+		--out-fmt-elf
+		 --all-callee-saves
+		 --debug
+		 --verbose
+		 --stack-auto
+		 --fverbose-asm
+		 --float-reent
+		 --no-peep
 )
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -msoft-float --out-fmt-elf --all-callee-saves --debug --verbose --stack-auto --fverbose-asm --float-reent --no-peep ")
 
 
 file(GLOB_RECURSE TMP_SOURCES_OWN ${CMAKE_CURRENT_SOURCE_DIR}/${module}/*(.c|.cpp))

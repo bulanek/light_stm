@@ -18,6 +18,9 @@ int main() {
 
 	CLK_DIVR = 0x00; // Set the frequency to 16 MHz
 	CLK_PCKENR1 = 0xFF; // Enable peripherals
+    CLK_PCKENR2 = 0xFF;// |= 1 << 2;/* enable rtc*/
+
+
 
 	rtcInit();
 	uartDebugInit();
