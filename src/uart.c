@@ -21,6 +21,7 @@ int getchar(void)
 
 void uartDebugInit(void)
 {
+	CLK_PCKENR1->USART1 = 1;
 	PC_DDR = 1<<3; // Put TX line on
 	PC_CR1 |= 1<<3; /* Tx push-pull*/
 
@@ -28,7 +29,8 @@ void uartDebugInit(void)
 	PC_CR1 |= 1<<2; /* Rx pull up*/
 
 
-	USART1_CR2->TEN = 1; // Allow TX & RX
+	USART1_CR2->TEN = 1; 
+	USART1_CR2->REN = 1;
 	USART1_CR3 &= ~(USART_CR3_STOP1 | USART_CR3_STOP2); // 1 stop bit
 
 	/* 9600 baud*/

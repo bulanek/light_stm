@@ -4,18 +4,81 @@
 #include "stdint.h"
 
 
-#define RTC_ALARM_IRQ_NO 4U
+#define RTC_ALARM_IRQ_NO    4U
+#define SPI_IRQ_NO          26U
 
 typedef struct {
     uint8_t CKM : 3;
     uint8_t : 5;
 } CLK_CKDIVR_S;
 
+
+typedef enum {
+    NO_CLOCK = 0,
+    CLOCK_HSI=1,
+    CLOCK_LSI=2,
+    CLOCK_HSE=4,
+    CLOCK_LSE=8
+} RTCSEL_E;
+
 typedef struct {
     uint8_t RTCSWBSY : 1; /**<The system is busy during a RTC clock change */
     uint8_t RTCSEL : 4; /**< Configurable RTC clock source selection */
     uint8_t RTCDIV : 3;
 } CLK_CRTCR_S;
+
+typedef struct {
+    uint8_t HSION: 1;
+    uint8_t HSIRDY: 1;
+    uint8_t LSION: 1;
+    uint8_t LSIRDY: 1;
+    uint8_t SAHALT : 1;
+    uint8_t FHWU: 1;
+    uint8_t BEEPHALT : 1;
+    uint8_t : 1;
+} CLK_ICKCR_S;
+
+typedef struct {
+    uint8_t TIM2 : 1;
+    uint8_t TIM3 : 1;
+    uint8_t TIM4 : 1;
+    uint8_t I2C1 : 1;
+    uint8_t SPI1 : 1;
+    uint8_t USART1 : 1;
+    uint8_t BEEP : 1;
+    uint8_t DAC : 1;
+} CLK_PCKENR1_S;
+
+typedef struct {
+    uint8_t ADC1 : 1;
+    uint8_t TIM1 : 1;
+    uint8_t RTC: 1;
+    uint8_t LCD: 1;
+    uint8_t DMA1 : 1;
+    uint8_t COMP12: 1;
+    uint8_t : 1;
+    uint8_t BOOT_ROM: 1;
+} CLK_PCKENR2_S;
+
+typedef struct {
+    uint8_t HSEON : 1;
+    uint8_t HSERDY : 1;
+    uint8_t LSEON : 1;
+    uint8_t LSERDY : 1;
+    uint8_t HSEBYP : 1;
+    uint8_t LSEBYP : 1;
+    uint8_t   : 2;
+} CLK_ECKCR_S;
+
+typedef struct {
+    uint8_t AES: 1;
+    uint8_t TIM6 : 1;
+    uint8_t SPI2: 1;
+    uint8_t USART2: 1;
+    uint8_t USART3 : 1;
+    uint8_t CSS_LSE: 1;
+    uint8_t : 2;
+} CLK_PCKENR3_S;
 
 
 typedef struct {
@@ -97,12 +160,27 @@ typedef struct {
 
 typedef struct {
     uint8_t ALRAF : 1;
-    uint8_t WURF : 1;
+    uint8_t : 1;
+    uint8_t WUTF : 1;
     uint8_t : 2;
     uint8_t TAMP1F : 1;
     uint8_t TAMP2F : 1;
     uint8_t TAMP3F : 1;
 } RTC_ISR2_S ;
+
+typedef struct {
+    uint8_t PREDIV_S : 7;
+    uint8_t : 1;
+} RTC_SPRERH_S;
+
+typedef struct {
+    uint8_t PREDIV_S : 8;
+} RTC_SPRERL_S;
+
+typedef struct {
+    uint8_t PREDIV_A : 7;
+    uint8_t : 1;
+} RTC_APRER_S;
 
 typedef struct {
     uint8_t WUT : 8;
@@ -206,12 +284,12 @@ typedef struct {
 
 /* CLOCK */
 #define CLK_DIVR	*(unsigned char*)0x50C0
-#define CLK_CRTCR	((volatile struct CLK_CRTCR_S*)0x50C1)
-#define CLK_ICKR	*(unsigned char*)0x50C2
-#define CLK_PCKENR1	*(unsigned char*)0x50C3
-#define CLK_PCKENR2	*(unsigned char*)0x50C4
+#define CLK_CRTCR	((volatile CLK_CRTCR_S*)0x50C1)
+#define CLK_ICKR	((volatile CLK_ICKCR_S*)0x50C2)
+#define CLK_PCKENR1	((volatile CLK_PCKENR1_S*)0x50C3)
+#define CLK_PCKENR2	((volatile CLK_PCKENR2_S*)0x50C4)
 #define CLK_CCOR	*(unsigned char*)0x50C5
-#define CLK_ECKR	*(unsigned char*)0x50C6
+#define CLK_ECKR	((volatile CLK_ECKCR_S*)0x50C6)
 #define CLK_SCSR	*(unsigned char*)0x50C7
 #define CLK_SWR 	*(unsigned char*)0x50C8
 #define CLK_SWCR	*(unsigned char*)0x50C9
@@ -239,6 +317,11 @@ typedef struct {
 
 #define RTC_ISR1 ((volatile RTC_ISR1_S*) 0x514C)
 #define RTC_ISR2 ((volatile RTC_ISR2_S*) 0x514D)
+
+
+#define RTC_SPRERH ((volatile RTC_SPRERH_S*) 0x5150)
+#define RTC_SPRERL ((volatile RTC_SPRERL_S*) 0x5151)
+#define RTC_APRER ((volatile RTC_APRER_S*) 0x5152)
 
 #define RTC_WUTRH ((volatile RTC_WUTRH_S*) 0x5154)
 #define RTC_WUTRL ((volatile RTC_WUTRL_S*) 0x5155)

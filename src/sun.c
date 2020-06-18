@@ -1,10 +1,11 @@
 #include "stdint.h"
+#include "stdbool.h"
 #include "calendar_cfg.h"
 #include "calendar_com.h"
 
 
 // Sunset in UTC time
-const uint32_t SUNSET_MONTHS_IN_MIN[12] = {
+const uint32_t SUNSET_MONTHS_UTC_IN_MIN[12] = {
         15 * 60 + 49,
         16 * 60 + 31,
         17 * 60 + 16,
@@ -20,7 +21,7 @@ const uint32_t SUNSET_MONTHS_IN_MIN[12] = {
 };
 
 // Sunrise in UTC time
-const uint32_t SUNRISE_MONTHS_IN_MIN[12] = {
+const uint32_t SUNRISE_MONTHS_UTC_IN_MIN[12] = {
         7 * 60 + 01,
         6 * 60 + 35,
         5 * 60 + 45,
@@ -34,6 +35,54 @@ const uint32_t SUNRISE_MONTHS_IN_MIN[12] = {
         5 * 60 + 52,
         6 * 60 + 39
 };
+
+static bool _isSummerTimeMarch(const CALENDAR_DATE_S* const pDate)
+{
+    // week with april
+    if (((7 - pDate->weekDay) + pDate->day) > 31) return true;
+    // week without april
+    if (pDate->weekDay < 7) return false;
+    // sunday
+    if ((pDate->day + 7) > 31 ) return true;
+    return false;
+}
+
+bool _isSummerTimeOctober(const CALENDAR_DATE_S* const pDate)
+{
+    // week with november
+    if (((7 - pDate->weekDay) + pDate->day) > 31) return false;
+    // week without november
+    if (pDate->weekDay< 7) return true;
+    // sunday
+    if ((pDate->day + 7) > 31 ) return false;
+    return true;
+}
+
+
+bool _isSummerTime(const CALENDAR_DATE_S* const pDate)
+{
+    bool retVal = false;
+    do
+    {
+        if ((pDate->month < 3) || (pDate->month > 10))
+        {
+            break;
+        }
+
+        if ((pDate->month > 3) && (pDate->month < 10))
+        {
+            break;
+        }
+
+        if (pDate->month == 3) {
+            retVal = _isSummerTimeMarch(pDate);
+        }
+        else {
+            retVal = _isSummerTimeOctober(pDate);
+        }
+    } while (0);
+    return retVal;
+}
 
 /* 0-100 value*/
 static uint8_t _computeTriangleRatioU32(const uint32_t timeSec, const uint32_t startTimeSec, const uint32_t endTimeSec)
@@ -52,17 +101,22 @@ static uint8_t _computeTriangleRatioU32(const uint32_t timeSec, const uint32_t s
     return intensity;
 }
 
-static uint32_t _getSunsetRiseInSec(const CALENDAR_DATE_S* pDate, const uint32_t* const pSunsetRiseInMin)
+static uint32_t _getSunsetRiseUTCInSec(const CALENDAR_DATE_S* pDate, const uint32_t* const pSunsetRiseInMin)
 {
-    if ((pSunsetRiseInMin != SUNSET_MONTHS_IN_MIN) && (pSunsetRiseInMin != SUNRISE_MONTHS_IN_MIN)) return 0;
+    if ((pSunsetRiseInMin != SUNSET_MONTHS_UTC_IN_MIN) && (pSunsetRiseInMin != SUNRISE_MONTHS_UTC_IN_MIN)) return 0;
     uint32_t sunsetRiseInSec = pSunsetRiseInMin[pDate->month - 1] * 60U;
     return sunsetRiseInSec;
 }
 
 uint8_t _getIntensitySunset(const CALENDAR_TIME_S* const pTime, const CALENDAR_DATE_S* const pDate)
 {
-    uint32_t timeSec = pTime->hour * 3600U + pTime->minute * 60U + pTime->second;
-    uint32_t sunsetInSec = _getSunsetRiseInSec(pDate, SUNSET_MONTHS_IN_MIN);
+    uint32_t timeSec = (uint32_t)pTime->hour * 3600U + (uint32_t)pTime->minute * 60U + pTime->second;
+    uint32_t sunsetInSec = _getSunsetRiseUTCInSec(pDate, SUNSET_MONTHS_UTC_IN_MIN);
+    sunsetInSec += 3600 ; /* UTC+1*/
+    if (_isSummerTime(pDate) == true)
+    {
+        sunsetInSec+=3600U;
+    }
 
     uint32_t startTimeSec = sunsetInSec - LIGHT_START_BEFORE_SUNSET_SEC;
     uint32_t endTimeSec = LIGHT_STOP_SEC;
@@ -73,7 +127,12 @@ uint8_t _getIntensitySunset(const CALENDAR_TIME_S* const pTime, const CALENDAR_D
 uint8_t _getIntensitySunrise(const CALENDAR_TIME_S* const pTime, const CALENDAR_DATE_S* const pDate) {
     uint32_t timeSec = pTime->hour * 3600U + pTime->minute * 60U + pTime->second;
 
-    uint32_t sunRiseInSec = _getSunsetRiseInSec(pDate, SUNRISE_MONTHS_IN_MIN);
+    uint32_t sunRiseInSec = _getSunsetRiseUTCInSec(pDate, SUNRISE_MONTHS_UTC_IN_MIN);
+    sunRiseInSec += 3600 ; /* UTC+1*/
+    if (_isSummerTime(pDate) == true)
+    {
+        sunRiseInSec+=3600U;
+    }
 
     uint32_t startTimeSec = LIGHT_START_SEC;
     uint32_t endTimeSec = LIGHT_STOP_AFTER_SUNRISE + sunRiseInSec;

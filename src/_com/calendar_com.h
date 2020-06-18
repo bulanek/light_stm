@@ -14,7 +14,18 @@ typedef struct {
     uint8_t day;
     uint8_t month;
     uint8_t year;
+    uint8_t weekDay;
 } CALENDAR_DATE_S;
+
+typedef enum {
+    MONDAY = 1,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY
+}WEEK_DAY_E;
 
 
 void getCalendar(CALENDAR_DATE_S* pDate, CALENDAR_TIME_S* pTime);
