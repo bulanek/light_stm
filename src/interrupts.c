@@ -2,6 +2,7 @@
 #include "calendar_com.h"
 #include "calendar_cfg.h"
 #include "trace_out.h"
+#include "sun_com.h"
 
 
 void SPI_IRQHandler(void) __interrupt(SPI_IRQ_NO) 

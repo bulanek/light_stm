@@ -101,7 +101,7 @@ message(STATUS "SDCC lib dir:${SDCC_LIB_DIR}")
 
 
 set(CMAKE_EXECUTABLE_SUFFIX ".exe")          # intel hex file .ihx -> .exe bug
-add_executable(${PROJECT_NAME} ${SOURCES})
+add_executable(${PROJECT_NAME} ${SOURCES} "src/_com/led_com.h")
 
 target_link_libraries(${PROJECT_NAME} stm8)
 

@@ -32,11 +32,4 @@ void getCalendar(CALENDAR_DATE_S* pDate, CALENDAR_TIME_S* pTime);
 void setCalendar(const CALENDAR_DATE_S* const pDate, const CALENDAR_TIME_S* const pTime);
 void rtcInit(void);
 
-void uartDebugInit(void);
-
-uint8_t getIntensity( const CALENDAR_DATE_S* const pDate,const CALENDAR_TIME_S* const pTime);
-
-void sendIntensity(const uint8_t intensity);
-
-
 #endif // !CALENDAR_COM_H

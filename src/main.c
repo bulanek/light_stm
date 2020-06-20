@@ -9,6 +9,8 @@
 #include <stm8l.h>
 #include "calendar_com.h"
 #include "trace_out.h"
+#include "led_com.h"
+#include "sun_com.h"
 
 /* needed here for correct asm translation. */
 extern void _wakeupInterrupt(void) __interrupt(RTC_ALARM_IRQ_NO);
@@ -22,6 +24,7 @@ static void printHelp(void)
 	printf("\t2 - Set datetime\n");
 	printf("\t3 - Send intensity\n");
 	printf("\t4 - Get intensity regarding time\n");
+	printf("\t5 - Check if summer time\n");
 }
 
 static void execute(const char a)
@@ -86,6 +89,14 @@ static void execute(const char a)
 			printf("Intensity: %i\n", getIntensity(&date, &time));
 		}
 		break;
+		case '5':
+		{
+			CALENDAR_DATE_S date;
+			getCalendar(&date, NULL);
+			printf("Is summertime: %i\n", isSummerTime(&date));
+		}
+		break;
+
         default:
             TRACE_01(TRACE_LEVEL_ERROR, "Unexpected choice %i", (int)a);
     }

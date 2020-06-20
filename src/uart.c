@@ -1,5 +1,6 @@
 #include <stm8l.h>
 #include "stdint.h"
+#include "led_com.h"
 
 int putchar(int aChar) {
 	USART1_DR->DR = (uint8_t)aChar;
