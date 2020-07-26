@@ -24,7 +24,6 @@ VERSION 0.1.1
 LANGUAGES C
 )
 
-
 # Build type
 if (NOT CMAKE_BUILD_TYPE)
 	set( CMAKE_BUILD_TYPE "Debug" CACHE INTERNAL "Build type")
@@ -101,7 +100,7 @@ message(STATUS "SDCC lib dir:${SDCC_LIB_DIR}")
 
 
 set(CMAKE_EXECUTABLE_SUFFIX ".exe")          # intel hex file .ihx -> .exe bug
-add_executable(${PROJECT_NAME} ${SOURCES} "src/_com/led_com.h")
+add_executable(${PROJECT_NAME} ${SOURCES} "src/_com/led_com.h" "src/timer.c")
 
 target_link_libraries(${PROJECT_NAME} stm8)
 

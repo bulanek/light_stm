@@ -238,8 +238,46 @@ typedef struct {
     uint8_t TIEN : 1;
 } USART_CR2_S;
 
+typedef struct {
+    uint8_t CEN : 1;
+    uint8_t UDIS : 1;
+    uint8_t URS : 1;
+    uint8_t OPM : 1;
+    uint8_t DIR : 1;
+    uint8_t CMS : 2;
+    uint8_t ARPE : 1;
+} TIM1_CR1_S;
 
 
+typedef enum {
+    OC1M_FROZEN=0,
+    OC1M_ACTIVE_ON_MATCH,
+    OC1M_INACTIVE_ON_MATCH,
+    OC1M_TOGGLE,
+    OC1M_FORCE_INACTIVE,
+    OC1M_FORCE_ACTIVE,
+    OC1M_PWM_MODE_1,
+    OC1M_PWM_MODE_2,
+} OC1M_E;
+
+typedef struct {
+    uint8_t UG : 1;
+    uint8_t CC1G : 1;
+    uint8_t CC2G : 1;
+    uint8_t CC3G : 1;
+    uint8_t CC4G : 1;
+    uint8_t COMG : 1;
+    uint8_t TG : 1;
+    uint8_t BG : 1;
+} TIM1_EGR_S;
+
+typedef struct {
+    uint8_t CC1S : 2;
+    uint8_t OC1FE : 1;
+    uint8_t OC1PE : 1;
+    OC1M_E  OC1M : 3;
+    uint8_t OC1CE : 1;
+} TIM1_CCMR1_S;
 
 typedef struct {
     uint8_t KEY : 8;
@@ -383,7 +421,7 @@ typedef struct {
 
 
 /* ------------------- TIMERS ------------------- */
-#define TIM1_CR1 *(unsigned char*)0x52B0
+#define TIM1_CR1 ((volatile TIM1_CR1_S*)0x52B0)
 #define TIM1_CR2 *(unsigned char*)0x52B1
 #define TIM1_SMCR *(unsigned char*)0x52B2
 #define TIM1_ETR *(unsigned char*)0x52B3
@@ -391,8 +429,8 @@ typedef struct {
 #define TIM1_IER *(unsigned char*)0x52B5
 #define TIM1_SR1 *(unsigned char*)0x52B6
 #define TIM1_SR2 *(unsigned char*)0x52B7
-#define TIM1_EGR *(unsigned char*)0x52B8
-#define TIM1_CCMR1 *(unsigned char*)0x52B9
+#define TIM1_EGR ((volatile TIM1_EGR_S *)0x52B8)
+#define TIM1_CCMR1 ((volatile TIM1_CCMR1_S*)0x52B9)
 #define TIM1_CCMR2 *(unsigned char*)0x52BA
 #define TIM1_CCMR3 *(unsigned char*)0x52BB
 #define TIM1_CCMR4 *(unsigned char*)0x52BC

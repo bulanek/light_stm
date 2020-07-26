@@ -23,6 +23,30 @@
           "type": "FILEPATH"
         }
       ]
+    },
+    {
+      "name": "Release",
+      "buildCommandArgs": "-j 8 VERBOSE=1",
+      "buildRoot": "C:\\Users\\z003tecs\\AppData\\Local\\Temp\\light",
+      "cmakeExecutable": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+      "configurationType": "Release",
+      "ctestCommandArgs": "",
+      "generator": "Unix Makefiles",
+      "inheritEnvironments": [],
+      "installRoot": "C:\\Users\\z003tecs\\AppData\\Local\\Temp\\light\\install",
+      "intelliSenseMode": "linux-gcc-arm",
+      "variables": [
+        {
+          "name": "CMAKE_MAKE_PROGRAM",
+          "value": "C:\\\\git\\\\mf_devkit\\Tools\\MinGW\\bin\\mingw32-make.exe",
+          "type": "STRING"
+        },
+        {
+          "name": "CMAKE_TOOLCHAIN_FILE",
+          "value": "C:/UserData/z003tecs/Documents/Documents/programs/light/cmake/Toolchain-sdcc.cmake",
+          "type": "FILEPATH"
+        }
+      ]
     }
   ]
 }

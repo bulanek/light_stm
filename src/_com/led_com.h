@@ -6,6 +6,8 @@
 
 void uartDebugInit(void);
 
+void timerInit(void);
+
 void sendIntensity(const uint8_t intensity);
 
 #endif // !LED_COM_H

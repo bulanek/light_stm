@@ -55,19 +55,3 @@ typedef struct {
 	uint8_t _checkSum;
 } LED_MESSAGE_S;
 
-void sendIntensity(const uint8_t intensity)
-{
-	LED_MESSAGE_S message;
-	
-	message._startupNum = STARTUP_NUM;
-	for (int i = 0; i < 3; i++)
-	{
-		message._channelNum = i + 1;
-		message._intensity = intensity;
-		message._checkSum = message._startupNum + message._channelNum + message._intensity;
-		for (int j = 0; j < 4; j++)
-		{
-			putchar(*(((uint8_t*)&message) + j));
-		}
-	}
-}
