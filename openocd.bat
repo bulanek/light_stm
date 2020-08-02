@@ -1,2 +1,2 @@
-set OPENOCD_DIR=C:\UserData\z003tecs\Documents\programs\OpenOCD-20190426-0.10.0
+set OPENOCD_DIR=C:\UserData\z003tecs\Documents\Documents\programs\OpenOCD-20190426-0.10.0
 %OPENOCD_DIR%\bin\openocd.exe -s %OPENOCD_DIR%\share\openocd\scripts\ -f interface\stlink.cfg -f target\stm8l152.cfg -c "init" -c "reset halt" -d

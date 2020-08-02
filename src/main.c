@@ -75,10 +75,11 @@ static void execute(const char a)
 			break;
 		case '3':
 		{
-			uint16_t intensity = (getchar() - (int)'0') * 100;
-			intensity +=(getchar() - (int)'0') * 10;
+			printf("\tTwo digits (00-99): \n");
+			int intensity = (getchar() - (int)'0') * 10;
 			intensity +=(getchar() - (int)'0') ;
 			sendIntensity(intensity);
+			TRACE_01(TRACE_LEVEL_LOG, "Sent intensity %i", intensity);
 		}
 		break;
 		case '4':
@@ -86,7 +87,7 @@ static void execute(const char a)
 			CALENDAR_DATE_S date;
 			CALENDAR_TIME_S time;
 			getCalendar(&date, &time);
-			printf("Intensity: %i\n", getIntensity(&date, &time));
+			TRACE_01(TRACE_LEVEL_LOG,"Intensity: %i", getIntensity(&date, &time));
 		}
 		break;
 		case '5':
@@ -110,6 +111,7 @@ int main() {
 	__asm__("rim"); // enable interrupt
 	rtcInit();
 	uartDebugInit();
+	timerInit();
     printHelp();
 	do {
 		char a = getchar();

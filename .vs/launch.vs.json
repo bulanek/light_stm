@@ -14,7 +14,7 @@
         "traceResponse": true,
         "engineLogging": true
       },
-      "miDebuggerPath": "C:\\UserData\\z003tecs\\Documents\\programs\\light\\gdb.bat",
+      "miDebuggerPath": "C:\\UserData\\z003tecs\\Documents\\Documents\\programs\\light\\gdb.bat",
 
       "MIMode": "gdb",
       "name": "LIGHT.exe",

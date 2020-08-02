@@ -280,6 +280,27 @@ typedef struct {
 } TIM1_CCMR1_S;
 
 typedef struct {
+    uint8_t CC1E : 1;
+    uint8_t CC1P : 1;
+    uint8_t CC1NE : 1;
+    uint8_t CC1NP : 1;
+    uint8_t CC2E : 1;
+    uint8_t CC2P : 1;
+    uint8_t CC2NE : 1;
+    uint8_t CC2NP : 1;
+} TIM1_CCER1_S;
+
+typedef struct {
+    uint8_t LOCK : 2;
+    uint8_t OSSI : 1;
+    uint8_t OSSR : 1;
+    uint8_t BKE : 1;
+    uint8_t BKP : 1;
+    uint8_t AOE : 1;
+    uint8_t MOE : 1;
+} TIM1_BKR_S;
+
+typedef struct {
     uint8_t KEY : 8;
 }RTC_WPR_S;
 
@@ -434,7 +455,7 @@ typedef struct {
 #define TIM1_CCMR2 *(unsigned char*)0x52BA
 #define TIM1_CCMR3 *(unsigned char*)0x52BB
 #define TIM1_CCMR4 *(unsigned char*)0x52BC
-#define TIM1_CCER1 *(unsigned char*)0x52BD
+#define TIM1_CCER1 ((volatile TIM1_CCER1_S*)0x52BD)
 #define TIM1_CCER2 *(unsigned char*)0x52BE
 #define TIM1_CNTRH *(unsigned char*)0x52BF
 #define TIM1_CNTRL *(unsigned char*)0x52C0
@@ -451,7 +472,7 @@ typedef struct {
 #define TIM1_CCR3L *(unsigned char*)0x52CB
 #define TIM1_CCR4H *(unsigned char*)0x52CC
 #define TIM1_CCR4L *(unsigned char*)0x52CD
-#define TIM1_BKR *(unsigned char*)0x52CE
+#define TIM1_BKR ((volatile TIM1_BKR_S*)0x52CE)
 #define TIM1_DTR *(unsigned char*)0x52CF
 #define TIM1_OISR *(unsigned char*)0x52D0
 #define TIM1_DCR1 *(unsigned char*)0x52D1
