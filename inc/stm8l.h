@@ -5,6 +5,9 @@
 
 
 #define RTC_ALARM_IRQ_NO    4U
+#define TIM1_UPDATE_OVERFLOW_TRIGER_IRQ 23
+#define TIM1_CAPTURE_IRQ 24
+
 #define SPI_IRQ_NO          26U
 
 typedef struct {
@@ -248,6 +251,17 @@ typedef struct {
     uint8_t ARPE : 1;
 } TIM1_CR1_S;
 
+typedef struct {
+    uint8_t UIF : 1;
+    uint8_t CC1F : 1;
+    uint8_t CC2IF : 1;
+    uint8_t CC3IF : 1;
+    uint8_t CC4IF : 1;
+    uint8_t COMIF : 1;
+    uint8_t TIF : 1;
+    uint8_t BIF : 1;
+} TIM1_SR1_S;
+
 
 typedef enum {
     OC1M_FROZEN=0,
@@ -448,7 +462,7 @@ typedef struct {
 #define TIM1_ETR *(unsigned char*)0x52B3
 #define TIM1_DER *(unsigned char*)0x52B4
 #define TIM1_IER *(unsigned char*)0x52B5
-#define TIM1_SR1 *(unsigned char*)0x52B6
+#define TIM1_SR1 ((volatile TIM1_SR1_S*)0x52B6)
 #define TIM1_SR2 *(unsigned char*)0x52B7
 #define TIM1_EGR ((volatile TIM1_EGR_S *)0x52B8)
 #define TIM1_CCMR1 ((volatile TIM1_CCMR1_S*)0x52B9)

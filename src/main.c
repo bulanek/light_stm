@@ -15,6 +15,9 @@
 /* needed here for correct asm translation. */
 extern void _wakeupInterrupt(void) __interrupt(RTC_ALARM_IRQ_NO);
 extern void SPI_IRQHandler(void) __interrupt(SPI_IRQ_NO);
+extern void _overflowInterrupt(void) __interrupt(TIM1_UPDATE_OVERFLOW_TRIGER_IRQ);
+extern void _captureInterrupt(void) __interrupt(TIM1_CAPTURE_IRQ);
+
 
 static void printHelp(void)
 {
@@ -25,10 +28,12 @@ static void printHelp(void)
 	printf("\t3 - Send intensity\n");
 	printf("\t4 - Get intensity regarding time\n");
 	printf("\t5 - Check if summer time\n");
+	printf("\t6 - Continue (halt)\n");
 }
 
-static void execute(const char a)
+static bool execute(const char a)
 {
+	bool retVal = true;
     switch (a)
     {
 		case 'h':
@@ -97,10 +102,16 @@ static void execute(const char a)
 			printf("Is summertime: %i\n", isSummerTime(&date));
 		}
 		break;
-
+		case '6':
+		{
+			retVal = false;
+			printf("Continue \n");
+		}
+		break;
         default:
             TRACE_01(TRACE_LEVEL_ERROR, "Unexpected choice %i", (int)a);
     }
+	return retVal;
 }
 
 
@@ -112,9 +123,19 @@ int main() {
 	rtcInit();
 	uartDebugInit();
 	timerInit();
-    printHelp();
+	printHelp();
+	volatile int k = 0;
+	uint8_t data;
 	do {
 		char a = getchar();
-		execute(a);
+		if (execute(a) == false)
+		{
+			break;
+		}
+	} while (1);
+
+	do
+	{
+		__asm__("wfi");
 	} while (1);
 }

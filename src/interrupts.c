@@ -30,4 +30,15 @@ void _wakeupInterrupt(void) __interrupt(RTC_ALARM_IRQ_NO)
     RTC_ISR2->WUTF = 0; /* acknowledge*/
 }
 
+static uint8_t timer_overflow = 0;
+void _overflowInterrupt(void) __interrupt(TIM1_UPDATE_OVERFLOW_TRIGER_IRQ)
+{
+    ++timer_overflow;
+}
+
+static uint8_t timer_capture = 0;
+void _captureInterrupt(void) __interrupt(TIM1_CAPTURE_IRQ)
+{
+    ++timer_capture;
+}
 
