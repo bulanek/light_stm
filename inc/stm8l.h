@@ -10,6 +10,40 @@
 
 #define SPI_IRQ_NO          26U
 
+
+#define FLASH_BLOCK_SIZE_BYTES 126U
+#define DATA_SECTION_START_ADDR (unsigned char*)0x1000
+
+#define STATIC_ASSERT(COND,MSG) typedef char static_assertion_##MSG[(COND)?1:-1]
+STATIC_ASSERT(1,this_should_be_true); 
+
+typedef struct {
+    uint8_t FIX : 1;
+    uint8_t IE : 1;
+    uint8_t WAITM : 1;
+    uint8_t EEPM : 1;
+}FLASH_CR1_S;
+
+typedef struct {
+    uint8_t PRG : 1;
+    uint8_t : 3;
+    uint8_t  FPRG : 1;
+    uint8_t  ERASE : 1;
+    uint8_t  WPRG : 1;
+    uint8_t  OPT : 1;
+}FLASH_CR2_S;
+
+typedef struct {
+    uint8_t WR_PG_DIS : 1;
+    uint8_t PUL : 1;
+    uint8_t EOP : 1;
+    uint8_t DUL : 1;
+    uint8_t : 2;
+    uint8_t HVOFF : 1;
+    uint8_t : 1;
+} FLASH_IAPSR_S;
+
+
 typedef struct {
     uint8_t CKM : 3;
     uint8_t : 5;
@@ -318,6 +352,10 @@ typedef struct {
     uint8_t KEY : 8;
 }RTC_WPR_S;
 
+/* OPT */
+
+#define OPT1   *(unsigned char*)0x4800
+
 /* GPIO */
 #define PA_ODR *(unsigned char*)0x5000
 #define PA_IDR *(unsigned char*)0x5001
@@ -354,6 +392,16 @@ typedef struct {
 #define PF_DDR *(unsigned char*)0x501B
 #define PF_CR1 *(unsigned char*)0x501C
 #define PF_CR2 *(unsigned char*)0x501D
+
+/* FLASH */
+
+#define FLASH_CR1   ((volatile FLASH_CR1_S*) 0x5050)
+#define FLASH_CR2   ((volatile FLASH_CR2_S*) 0x5051)
+#define FLASH_PUKR  *(unsigned char*)0x5052
+#define FLASH_DUKR  *(unsigned char*)0x5053
+#define FLASH_IAPSR ((volatile FLASH_IAPSR_S*)0x5054)
+
+
 
 /* CLOCK */
 #define CLK_DIVR	*(unsigned char*)0x50C0

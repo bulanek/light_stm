@@ -13,11 +13,11 @@ void timerInit(void) {
 	PD_CR2 |= 1 << 7; /* 10 MHz speed*/
 
 	TIM1_CCMR1->OC1PE = 1; /* preload reg enable*/
-	TIM1_CCMR1->OC1M = OC1M_PWM_MODE_2;// OC1M_PWM_MODE_1; /* in up-counting, channel 1 is active as long as TIM1_CNT < TIM1_CCR1 */
+	TIM1_CCMR1->OC1M = OC1M_PWM_MODE_2;// /* in up-counting, channel 1 is active as long as TIM1_CNT < TIM1_CCR1 */
 
 	TIM1_ARRH = 100;
 	TIM1_ARRL = 0x00;
-	TIM1_CCR1H = 99; /* TODO zero*/
+	TIM1_CCR1H = 0; 
 	TIM1_CCR1L = 0x00;
 
 	TIM1_CR1->CMS = 0; /* Edge aligned mode*/
@@ -25,7 +25,7 @@ void timerInit(void) {
 
 	TIM1_CCER1->CC1E = 1; /* capture/compare 1 output enable*/
 	TIM1_CCER1->CC1P = 1;
-	TIM1_BKR->AOE = 1; /* automatic outout enable. MOE auto */
+	TIM1_BKR->AOE = 1; /* automatic output enable. MOE auto */
 
 	TIM1_BKR->OSSR = 1;  
 	TIM1_BKR->OSSI = 1;

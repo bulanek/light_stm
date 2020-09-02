@@ -5,7 +5,6 @@
 #include "sun_com.h"
 #include "led_com.h"
 
-
 void SPI_IRQHandler(void) __interrupt(SPI_IRQ_NO) 
 {
     __asm__("nop");
@@ -20,10 +19,12 @@ void _wakeupInterrupt(void) __interrupt(RTC_ALARM_IRQ_NO)
     CALENDAR_DATE_S date;
     CALENDAR_TIME_S time;
 
+    TRACE_00(TRACE_LEVEL_LOG,"Wakeup interrupt");
     getCalendar(&date, &time);
     uint8_t intensity = getIntensity(&date, &time);
     if (f_intensity != intensity)
     {
+        TRACE_02(TRACE_LEVEL_LOG,"New intensity: %i -> %i",f_intensity, intensity);
         f_intensity = intensity;
         sendIntensity(intensity);
     }

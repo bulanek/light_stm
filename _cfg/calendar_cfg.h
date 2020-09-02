@@ -1,7 +1,7 @@
 #ifndef CALENDAR_CFG_H
 #define CALENDAR_CFG_H
 
-#define WAKEUP_TIME_SEC   1U
+#define WAKEUP_TIME_SEC   60U
 
 #define TIME_UPDATE_INTERVAL_SEC 36000U
 

@@ -11,6 +11,7 @@
 #include "trace_out.h"
 #include "led_com.h"
 #include "sun_com.h"
+#include "flash_com.h"
 
 /* needed here for correct asm translation. */
 extern void _wakeupInterrupt(void) __interrupt(RTC_ALARM_IRQ_NO);
@@ -75,6 +76,10 @@ static bool execute(const char a)
 			time.second = (getchar() - (int)'0') * 10;
 			time.second += getchar() - (int)'0';
 			setCalendar(&date, &time);
+			NV_DATA_S dataNV;
+			dataNV._date = date;
+			dataNV._time = time;
+			writeFlash(&dataNV);
 			printf("\t Calendar set\n");
 		}
 			break;
@@ -123,9 +128,14 @@ int main() {
 	rtcInit();
 	uartDebugInit();
 	timerInit();
+	flashInit();
+
+	NV_DATA_S data;
+	readFlash(&data);
+	setCalendar(&data._date, &data._time);
+
 	printHelp();
 	volatile int k = 0;
-	uint8_t data;
 	do {
 		char a = getchar();
 		if (execute(a) == false)
@@ -137,5 +147,10 @@ int main() {
 	do
 	{
 		__asm__("wfi");
+		getCalendar(&data._date, &data._time);
+		NV_DATA_S nvData;
+		nvData._date = data._date;
+		nvData._time = data._time;
+		writeFlash(&nvData);
 	} while (1);
 }
