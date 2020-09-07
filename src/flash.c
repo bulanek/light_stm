@@ -5,7 +5,6 @@
 #include "string.h"
 
 uint8_t* f_pFlashData;
-uint8_t f_flashBuffer[FLASH_BLOCK_SIZE_BYTES];
 
 STATIC_ASSERT(sizeof(NV_DATA_S) <= FLASH_BLOCK_SIZE_BYTES, wrong_size_nv_data);
 
@@ -38,14 +37,13 @@ void writeFlash(const NV_DATA_S* const pData)
     flashUnlock();
     volatile uint8_t iapsr;
     volatile FLASH_IAPSR_S* pIapsr;
-    memcpy(f_flashBuffer, pData, sizeof(NV_DATA_S));
     //while (FLASH_CR2->PRG == 1);
     //FLASH_CR2->PRG = 1;
 
     int counter = 0;
     while (++counter <= sizeof(NV_DATA_S))
     {
-        *f_pFlashData++ = f_flashBuffer[counter-1];
+        *f_pFlashData++ = *((uint8_t*)pData + counter);
         iapsr = *(unsigned char*)0x5054;
         pIapsr = (FLASH_IAPSR_S*)&iapsr;
         while (pIapsr->EOP != 1);
