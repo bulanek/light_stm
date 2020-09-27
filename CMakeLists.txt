@@ -82,10 +82,12 @@ add_executable(${PROJECT_NAME} ${SOURCES} )
 
 target_link_libraries(${PROJECT_NAME} ${TARGET_LINK_LIBRARIES})
 
+
+
 add_custom_command(
 		TARGET ${PROJECT_NAME} 
 		POST_BUILD
-		COMMAND  cmake.exe -E copy ${PROJECT_NAME}${CMAKE_EXECUTABLE_SUFFIX} ${PROJECT_NAME}.ihx # intel hex file .ihx -> .exe bug
+		COMMAND  cmake -E copy ${PROJECT_NAME}${CMAKE_EXECUTABLE_SUFFIX} ${PROJECT_NAME}.ihx # intel hex file .ihx -> .exe bug
 		COMMENT "Creation of ${PROJECT_NAME}"
 		)
 
