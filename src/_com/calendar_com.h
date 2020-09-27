@@ -30,6 +30,6 @@ typedef enum {
 
 void getCalendar(CALENDAR_DATE_S* pDate, CALENDAR_TIME_S* pTime);
 void setCalendar(const CALENDAR_DATE_S* const pDate, const CALENDAR_TIME_S* const pTime);
-void rtcInit(void);
+void clockInit(void);
 
 #endif // !CALENDAR_COM_H

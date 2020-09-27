@@ -31,8 +31,10 @@ static void _autoWakeUpInit(void)
     RTC_CR2->WUTE = 1U;
 }
 
-void rtcInit(void)
+void clockInit(void)
 {
+
+	CLK_DIVR = 0x00; // Set the frequency to 16 MHz
     CLK_PCKENR2->RTC = 1;
     while (CLK_CRTCR->RTCSWBSY);
     CLK_CRTCR->RTCSEL = CLOCK_LSE;

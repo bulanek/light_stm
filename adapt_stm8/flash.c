@@ -1,5 +1,5 @@
-#include "_com/flash_com.h"
-#include "_com/trace_out.h"
+#include "flash_com.h"
+#include "trace_out.h"
 #include "stm8l.h"
 
 #include "string.h"

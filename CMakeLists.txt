@@ -39,34 +39,14 @@ endif()
 # Binary file name
 set(APP_BIN_NAME light_ctrl CACHE STRING "Name of application bin file")
 
+if(${TARGET_TYPE} STREQUAL "STM8")
+include ("CMakeListsSTM8.cmake")
+endif()
 
-set(CMAKE_C_FLAGS_INIT "-mstm8 --out-fmt-elf  ")
-SET(CMAKE_EXE_LINKER_FLAGS_INIT "-msoft-float  -mstm8 --out-fmt-elf --all-callee-saves --debug --verbose --stack-auto --fverbose-asm --float-reent --no-peep ")
-add_definitions("-DTHUMB_INTERWORK")
-add_definitions("-DSTM8")
-add_definitions("-DSTM8L152")
-SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -msoft-float -mstm8 --out-fmt-elf --all-callee-saves --debug --verbose --stack-auto --fverbose-asm --float-reent --no-peep ")
+if(${TARGET_TYPE} STREQUAL "STM32")
+include ("CMakeListsSTM32.cmake")
+endif()
 
-
-add_compile_options(
-		-msoft-float
-		-mstm8
-		--out-fmt-elf
-		 --all-callee-saves
-		 --debug
-		 --verbose
-		 --stack-auto
-		 --fverbose-asm
-		 --float-reent
-		 --no-peep
-)
-
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -msoft-float --out-fmt-elf --all-callee-saves --debug --verbose --stack-auto --fverbose-asm --float-reent --no-peep ")
-
-
-file(GLOB_RECURSE TMP_SOURCES_OWN ${CMAKE_CURRENT_SOURCE_DIR}/${module}/*(.c|.cpp))
-
-set(OPTIMIZATION_RELEASE "--opt-code-size")
 
 # ------------------------------------------------------------------------------
 # SOURCES
@@ -83,7 +63,7 @@ endforeach(module)
 # INCLUDES
 # ------------------------------------------------------------------------------
 SET (INC_DIRS ${INC_DIRS}
-	${SDCC_INC_DIR} # gcc includes
+	${COMPILER_INC_DIR} # gcc includes
   	${CMAKE_CURRENT_SOURCE_DIR}/inc
   	${CMAKE_CURRENT_SOURCE_DIR}/_cfg
     ${CMAKE_CURRENT_SOURCE_DIR}/src/_com
@@ -95,14 +75,12 @@ include_directories(${INC_DIRS})
 # BUILD
 # ------------------------------------------------------------------------------
 
-link_directories(${SDCC_LIB_DIR}/stm8)
-message(STATUS "SDCC lib dir:${SDCC_LIB_DIR}")
 
 
 set(CMAKE_EXECUTABLE_SUFFIX ".exe")          # intel hex file .ihx -> .exe bug
-add_executable(${PROJECT_NAME} ${SOURCES} "src/_com/led_com.h" "src/timer.c")
+add_executable(${PROJECT_NAME} ${SOURCES} )
 
-target_link_libraries(${PROJECT_NAME} stm8)
+target_link_libraries(${PROJECT_NAME} ${TARGET_LINK_LIBRARIES})
 
 add_custom_command(
 		TARGET ${PROJECT_NAME} 

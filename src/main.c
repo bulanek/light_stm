@@ -6,18 +6,23 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <stm8l.h>
 #include "calendar_com.h"
 #include "trace_out.h"
 #include "led_com.h"
 #include "sun_com.h"
 #include "flash_com.h"
+#include "hal_com.h"
 
 /* needed here for correct asm translation. */
+
+
+#ifdef STM8
+#include "../adapt_stm8/stm8l.h"
 extern void _wakeupInterrupt(void) __interrupt(RTC_ALARM_IRQ_NO);
 extern void SPI_IRQHandler(void) __interrupt(SPI_IRQ_NO);
 extern void _overflowInterrupt(void) __interrupt(TIM1_UPDATE_OVERFLOW_TRIGER_IRQ);
 extern void _captureInterrupt(void) __interrupt(TIM1_CAPTURE_IRQ);
+#endif /* STM8 */
 
 
 static void printHelp(void)
@@ -123,9 +128,8 @@ static bool execute(const char a)
 int main() {
 	unsigned long i = 0;
 
-	CLK_DIVR = 0x00; // Set the frequency to 16 MHz
-	__asm__("rim"); // enable interrupt
-	rtcInit();
+	enableInterrupt();
+	clockInit();
 	uartDebugInit();
 	timerInit();
 	flashInit();
@@ -146,7 +150,7 @@ int main() {
 
 	do
 	{
-		__asm__("wfi");
+		waitForInterrupt();
 		getCalendar(&data._date, &data._time);
 		NV_DATA_S nvData;
 		nvData._date = data._date;
