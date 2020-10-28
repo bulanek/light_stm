@@ -4,6 +4,7 @@
 #include "calendar_com.h"
 #include "calendar_cfg.h"
 #include "CMSIS/device/system_stm32f1xx.h"
+#include "stm32f103xb.h"
 
 static void _rtcUnLock(void)
 {

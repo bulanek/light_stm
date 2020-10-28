@@ -21,7 +21,7 @@ cmake_minimum_required( VERSION 3.6 )  # FILTER in list
 set(DOXYGEN_PROJECT_NUMBER "LIGHT_CTRL_0.1.1")
 project( LIGHT
 VERSION 0.1.1  
-LANGUAGES C
+LANGUAGES C CXX ASM
 )
 
 # Build type
@@ -41,10 +41,10 @@ set(APP_BIN_NAME light_ctrl CACHE STRING "Name of application bin file")
 
 if(${TARGET_TYPE} STREQUAL "STM8")
 include ("CMakeListsSTM8.cmake")
-endif()
-
-if(${TARGET_TYPE} STREQUAL "STM32")
+elseif(${TARGET_TYPE} STREQUAL "STM32")
 include ("CMakeListsSTM32.cmake")
+else()
+message(FATAL_ERROR "Unexpected target ${TARGET_TYPE}")
 endif()
 
 
@@ -76,20 +76,25 @@ include_directories(${INC_DIRS})
 # ------------------------------------------------------------------------------
 
 
-
 set(CMAKE_EXECUTABLE_SUFFIX ".exe")          # intel hex file .ihx -> .exe bug
 add_executable(${PROJECT_NAME} ${SOURCES} )
 
 target_link_libraries(${PROJECT_NAME} ${TARGET_LINK_LIBRARIES})
 
-
+#add_custom_command(
+#		TARGET ${PROJECT_NAME} 
+#		POST_BUILD
+#		COMMAND  cmake -E copy ${PROJECT_NAME}${CMAKE_EXECUTABLE_SUFFIX} ${PROJECT_NAME}.ihx # intel hex file .ihx -> .exe bug
+#		COMMENT "Creation of ${PROJECT_NAME}"
+#		)
 
 add_custom_command(
 		TARGET ${PROJECT_NAME} 
 		POST_BUILD
-		COMMAND  cmake -E copy ${PROJECT_NAME}${CMAKE_EXECUTABLE_SUFFIX} ${PROJECT_NAME}.ihx # intel hex file .ihx -> .exe bug
+		COMMAND  cmake.exe -E copy ${PROJECT_NAME}${CMAKE_EXECUTABLE_SUFFIX} ${PROJECT_NAME}
 		COMMENT "Creation of ${PROJECT_NAME}"
 		)
+
 
 # ------------------------------------------------------------------------------
 # DOC 
@@ -131,4 +136,9 @@ doxygen_add_docs(
 install(
 	TARGETS ${PROJECT_NAME} 
     RUNTIME	DESTINATION	${CMAKE_INSTALL_PREFIX}
+)
+# Files created by add_custom_command (objcopy,..)
+install(FILES 			${CMAKE_CURRENT_BINARY_DIR}/${APP_BIN_NAME}.bin 
+						${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.map  
+		DESTINATION 	${CMAKE_INSTALL_PREFIX}
 )

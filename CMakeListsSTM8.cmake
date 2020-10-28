@@ -34,3 +34,4 @@ endforeach(module)
 
 set(TARGET_LINK_LIBRARIES stm8)
 
+

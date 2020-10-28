@@ -17,7 +17,7 @@
       "miDebuggerPath": "C:\\UserData\\z003tecs\\Documents\\Documents\\programs\\light\\gdb.bat",
 
       "MIMode": "gdb",
-      "name": "LIGHT.exe",
+      "name": "LIGHT_stm8.exe",
       "program": "/mnt/c/Users/z003tecs/AppData/Local/Temp/light/LIGHT.ihx",
       "project": "CMakeLists.txt",
       "projectTarget": "LIGHT.exe",
@@ -38,6 +38,48 @@
           "text": "info breakpoints"
         }
       ],
+      "type": "cppdbg"
+    },
+    {
+      "autorun": [
+        "target remote 127.0.0.1:3333",
+        "symbol-file C:/Users/z003tecs/AppData/Local/Temp/light_stm32/install/LIGHT.exe",
+        "monitor reset"
+      ],
+      "cwd": "${workspaceRoot}",
+      "externalConsole": true,
+      "logging": {
+        "trace": true,
+        "traceResponse": true,
+        "engineLogging": true
+      },
+      "miDebuggerPath": "C:\\git\\mf_dev\\Tools\\gnu_tools_arm_embedded_8_2018_q4_major\\bin\\arm-none-eabi-gdb.exe",
+      "MIMode": "gdb",
+      "name": "LIGHT.exe",
+      "program": "C:\\Users\\z003tecs\\AppData\\Local\\Temp\\light_stm32\\LIGHT",
+      "project": "CMakeLists.txt",
+      "projectTarget": "LIGHT.exe",
+      "setupCommands": [
+        {
+          "text": "-file-exec-and-symbols C:/Users/z003tecs/AppData/Local/Temp/light_stm32/LIGHT"
+        },
+        {
+          "text": "target remote 127.0.0.1:3333"
+        },
+        {
+          "text": "mon reset halt"
+        },
+        {
+          "text": "mon reset init"
+        },
+        {
+          "text": "load C:/Users/z003tecs/AppData/Local/Temp/light_stm32/LIGHT"
+        },
+        {
+          "text": "info breakpoints"
+        }
+      ],
+      "targetArchitecture": "arm",
       "type": "cppdbg"
     }
   ]
