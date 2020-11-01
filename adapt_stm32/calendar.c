@@ -22,7 +22,7 @@ static void _autoWakeUpInit(void)
 
 void clockInit(void)
 {
-    SystemInit();
+//    SystemInit();
 }
 
 /* Date in BinaryCodedDecimal*/

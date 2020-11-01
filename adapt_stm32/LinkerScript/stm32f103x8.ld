@@ -1,69 +1,49 @@
-  
-/*
- * This file is part of the libopencm3 project.
- *
- * Copyright (C) 2015 Karl Palsson <karlp@tweak.net.au>
- *
- * This library is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library.  If not, see <http://www.gnu.org/licenses/>.
- */
+ /*
+*****************************************************************************
+**
+**  File        : STM32F103XB_FLASH.ld
+**
+**  Abstract    : Linker script for STM32F103xB Device with
+**                128KByte FLASH, 20KByte RAM
+**
+**                Set heap size, stack size and stack location according
+**                to application requirements.
+**
+**                Set memory bank area and size if external memory is used.
+**
+**  Target      : STMicroelectronics STM32
+**
+**
+**  Distribution: The file is distributed as is, without any warranty
+**                of any kind.
+**
+**  (c)Copyright Ac6.
+**  You may use this file as-is or modify it according to the needs of your
+**  project. Distribution of this file (unmodified or modified) is not
+**  permitted. Ac6 permit registered System Workbench for MCU users the
+**  rights to distribute the assembled, compiled & linked contents of this
+**  file as part of an application binary file, provided that it is built
+**  using the System Workbench for MCU toolchain.
+**
+*****************************************************************************
+*/
 
-/* Linker script for STM32F103x8, 64k flash, 20k RAM. */
-
-/* Define memory regions. */
-MEMORY
-{
-	FLASH (rx) : ORIGIN = 0x08000000, LENGTH = 64K
-	RAM (rwx) : ORIGIN = 0x20000000, LENGTH = 20K
-}
-
-/* Following cortex-m-generic.ld */
-
-/*
- * This file is part of the libopencm3 project.
- *
- * Copyright (C) 2009 Uwe Hermann <uwe@hermann-uwe.de>
- *
- * This library is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-
-/* Enforce emmition of the vector table. */
-EXTERN (vector_table)
-
-/* Define the entry point of the output file. */
+/* Entry Point */
 ENTRY(Reset_Handler)
 
 /* Highest address of the user mode stack */
-_estack = 0x20018000;    /* end of RAM */
+_estack = 0x20004FFF;    /* end of RAM */
 
 /* Generate a link error if heap and stack don't fit into RAM */
-_Min_Heap_Size = 0x200;      /* required amount of heap  */
-_Min_Stack_Size = 0x400; /* required amount of stack */
+_Min_Heap_Size = 0x400;      /* required amount of heap  */
+_Min_Stack_Size = 0x800; /* required amount of stack */
 
-
-/* Define sections. */
+/* Specify the memory areas */
+MEMORY
+{
+FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 64K
+RAM (xrw)       : ORIGIN = 0x20000000, LENGTH = 20K
+}
 
 /* Define output sections */
 SECTIONS
@@ -185,5 +165,3 @@ SECTIONS
 
   .ARM.attributes 0 : { *(.ARM.attributes) }
 }
-
-

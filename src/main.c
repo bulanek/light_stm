@@ -24,6 +24,9 @@ extern void _overflowInterrupt(void) __interrupt(TIM1_UPDATE_OVERFLOW_TRIGER_IRQ
 extern void _captureInterrupt(void) __interrupt(TIM1_CAPTURE_IRQ);
 #endif /* STM8 */
 
+void _init(void)
+{
+}
 
 static void printHelp(void)
 {
@@ -123,6 +126,7 @@ static bool execute(const char a)
     }
 	return retVal;
 }
+
 
 
 int main() {

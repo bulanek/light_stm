@@ -7,7 +7,7 @@
 
 
 // Sunset in UTC time
-const uint32_t SUNSET_MONTHS_UTC_IN_MIN[] = {
+static const uint32_t SUNSET_MONTHS_UTC_IN_MIN[] = {
         15 * 60 + 29, /* 1*/
         16 * 60 + 21, /* 2*/
         17 * 60 +  9, /* 3*/
@@ -23,7 +23,7 @@ const uint32_t SUNSET_MONTHS_UTC_IN_MIN[] = {
 };
 
 // Sunrise in UTC time
-const uint32_t SUNRISE_MONTHS_UTC_IN_MIN[] = {
+static const uint32_t SUNRISE_MONTHS_UTC_IN_MIN[] = {
         5 * 60 + 54, /* 1*/
         6 * 60 + 12, /* 2*/
         5 * 60 + 13, /* 3*/
