@@ -37,6 +37,19 @@ int _read(int file, char* pData, int len)
 
 int _write(int file, char* pData, int len)
 {
+    char* pTmpData = pData;
+    int bytes_written;
+    for (bytes_written = 0; bytes_written < len; ++bytes_written)
+    {
+        while ((USART2->SR & USART_SR_TXE) == 0U);
+        volatile uint8_t data = pTmpData[bytes_written];
+        USART2->DR = data;
+        if (pTmpData[bytes_written] == '\n')
+        {
+            while ((USART2->SR & USART_SR_TXE) == 0U);
+            USART2->DR = '\r';
+        }
+    }
     return len;
 }
 

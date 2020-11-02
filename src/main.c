@@ -30,6 +30,7 @@ void _init(void)
 
 static void printHelp(void)
 {
+	printf("\n");
 	printf("\nConfiguration for light:\n");
 	printf("\th - this help\n");
 	printf("\t1 - Get datetime\n");
