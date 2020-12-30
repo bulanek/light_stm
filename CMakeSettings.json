@@ -43,12 +43,12 @@
       "variables": [
         {
           "name": "CMAKE_MAKE_PROGRAM",
-          "value": "C:\\\\git\\\\mf_devkit\\Tools\\MinGW\\bin\\mingw32-make.exe",
+          "value": "C:\\\\git\\\\mf_dev\\Tools\\MinGW\\bin\\mingw32-make.exe",
           "type": "STRING"
         },
         {
           "name": "CMAKE_TOOLCHAIN_FILE",
-          "value": "C:/UserData/z003tecs/Documents/Documents/programs/light/cmake/Toolchain-gcc.cmake",
+          "value": "C:/git/other_projects/light_stm/cmake/Toolchain-gcc.cmake",
           "type": "FILEPATH"
         },
         {

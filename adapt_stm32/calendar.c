@@ -12,17 +12,19 @@ static void _rtcUnLock(void)
 
 static void _rtcLock(void)
 {
+}
 
-}    
-
-static void _autoWakeUpInit(void)
+static void _rtcInit(void)
 {
+    while ((RCC->CR | RTC_CRL_RTOFF) == 0);
+//    RTC->CR |= RTC_CRL
 
 }
 
 void clockInit(void)
 {
 //    SystemInit();
+    RCC->CR |= RCC_CR_HSION;
 }
 
 /* Date in BinaryCodedDecimal*/
@@ -33,5 +35,4 @@ void setCalendar( const CALENDAR_DATE_S* const pDate, const CALENDAR_TIME_S* con
 void getCalendar(CALENDAR_DATE_S* pDate, CALENDAR_TIME_S* pTime)
 {
 }
-
 
