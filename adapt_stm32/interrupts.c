@@ -8,12 +8,13 @@
 
 
 static uint8_t f_intensity = 0U;
-void RTC_IRQHandler(void) 
+
+void RTC_IRQHandler(void)
 {
     CALENDAR_DATE_S date;
     CALENDAR_TIME_S time;
 
-    TRACE_00(TRACE_LEVEL_LOG,"Wakeup interrupt");
+    //TRACE_00(TRACE_LEVEL_LOG,"Second interrupt");
     getCalendar(&date, &time);
     uint8_t intensity = getIntensity(&date, &time);
     if (f_intensity != intensity)
@@ -22,6 +23,6 @@ void RTC_IRQHandler(void)
         f_intensity = intensity;
         sendIntensity(intensity);
     }
-    //RTC_ISR2->WUTF = 0; /* acknowledge*/
-}
 
+    RTC->CRL &= ~RTC_CRL_SECF; /* ack*/
+}

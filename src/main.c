@@ -134,10 +134,10 @@ int main() {
 	unsigned long i = 0;
 
 	enableInterrupt();
-	clockInit();
 	uartDebugInit();
 	timerInit();
 	flashInit();
+	clockInit();
 
 	NV_DATA_S data;
 	readFlash(&data);
