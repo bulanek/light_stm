@@ -8,7 +8,7 @@ uint8_t* f_pFlashData;
 
 STATIC_ASSERT(sizeof(NV_DATA_S) <= FLASH_BLOCK_SIZE_BYTES, wrong_size_nv_data);
 
-static void flashUnlock(void)
+static void _flashUnlock(void)
 {
     FLASH_DUKR = 0xAE;
     FLASH_DUKR = 0x56; /* RM0031 3.5.2.  Memory access security system (MASS)*/
@@ -16,7 +16,7 @@ static void flashUnlock(void)
     while (FLASH_IAPSR->DUL == 0);
 }
 
-static void flashLock(void)
+static void _flashLock(void)
 {
     FLASH_IAPSR->DUL = 0;
 }
@@ -34,7 +34,7 @@ void flashInit(void)
 
 void writeFlash(const NV_DATA_S* const pData)
 {
-    flashUnlock();
+    _flashUnlock();
     volatile uint8_t iapsr;
     volatile FLASH_IAPSR_S* pIapsr;
     //while (FLASH_CR2->PRG == 1);
@@ -57,7 +57,7 @@ void writeFlash(const NV_DATA_S* const pData)
         TRACE_00(TRACE_LEVEL_ERROR, "write attempt to a write protected page occurred");
     }
     while (FLASH_IAPSR->EOP != 0); /* cleared by read operation (PM0054 Standard block programing seq).*/
-    flashLock();
+    _flashLock();
 }
 
 void readFlash(NV_DATA_S* const pData)

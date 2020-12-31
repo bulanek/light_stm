@@ -2,6 +2,7 @@
 #define _FLASH_COM_H_
 
 #include "calendar_com.h"
+#include "stdbool.h"
 
 typedef struct {
     CALENDAR_DATE_S _date;
@@ -11,7 +12,7 @@ typedef struct {
 
 void flashInit(void);
 
-void writeFlash(const NV_DATA_S* const pData);
-void readFlash(NV_DATA_S* const pData);
+bool writeFlash(const void* const pData, const uint16_t length);
+void readFlash(void* const pData, const uint16_t length);
 
 #endif // !_FLASH_COM_H_

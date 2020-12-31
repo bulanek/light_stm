@@ -84,19 +84,19 @@ static bool execute(const char a)
 			printf("\tSeconds: \n");
 			time.second = (getchar() - (int)'0') * 10;
 			time.second += getchar() - (int)'0';
-			setCalendar(&date, &time);
-			NV_DATA_S dataNV;
-			dataNV._date = date;
-			dataNV._time = time;
-			writeFlash(&dataNV);
-			printf("\t Calendar set\n");
-		}
-			break;
-		case '3':
-		{
-			printf("\tTwo digits (00-99): \n");
-			int intensity = (getchar() - (int)'0') * 10;
-			intensity +=(getchar() - (int)'0') ;
+            setCalendar(&date, &time);
+            NV_DATA_S dataNV;
+            dataNV._date = date;
+            dataNV._time = time;
+            (void)writeFlash(&dataNV, sizeof(dataNV));
+            printf("\t Calendar set\n");
+        }
+        break;
+        case '3':
+        {
+            printf("\tTwo digits (00-99): \n");
+            int intensity = (getchar() - (int)'0') * 10;
+            intensity += (getchar() - (int)'0');
 			sendIntensity(intensity);
 			TRACE_01(TRACE_LEVEL_LOG, "Sent intensity %i", intensity);
 		}
@@ -140,7 +140,7 @@ int main() {
 	clockInit();
 
 	NV_DATA_S data;
-	readFlash(&data);
+    readFlash(&data, sizeof(data));
 	setCalendar(&data._date, &data._time);
 
 	printHelp();
@@ -159,7 +159,7 @@ int main() {
 		getCalendar(&data._date, &data._time);
 		NV_DATA_S nvData;
 		nvData._date = data._date;
-		nvData._time = data._time;
-		writeFlash(&nvData);
-	} while (1);
+        nvData._time = data._time;
+        writeFlash(&nvData, sizeof(nvData));
+    } while (1);
 }

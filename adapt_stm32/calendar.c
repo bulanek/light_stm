@@ -43,8 +43,6 @@ void clockInit(void)
 
     while ((RCC->CSR & RCC_CSR_LSIRDY) == 0);
 
-
-
     _rtcInit();
 }
 
@@ -55,4 +53,19 @@ void setCalendar( const CALENDAR_DATE_S* const pDate, const CALENDAR_TIME_S* con
 
 void getCalendar(CALENDAR_DATE_S* pDate, CALENDAR_TIME_S* pTime)
 {
+    if (pDate != NULL)
+    {
+        pDate->day = RTC_DR1->DT * 10U + RTC_DR1->DU;
+        pDate->month = RTC_DR2->MT * 10U + RTC_DR2->MU;
+        pDate->year = RTC_DR3->YT * 10U + RTC_DR3->YU;
+        pDate->weekDay = (uint8_t)(RTC_DR2->WDU*1);
+    }
+
+    if (pTime != NULL)
+    {
+        pTime->second = RTC_TR1->ST * 10U + RTC_TR1->SU;
+        pTime->minute = RTC_TR2->MNT * 10U + RTC_TR2->MNU;
+        pTime->hour = RTC_TR3->HT * 10U + RTC_TR3->HU;
+    }
+
 }
