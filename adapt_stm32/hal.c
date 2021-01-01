@@ -2,6 +2,8 @@
 //#include "errno.h"
 #include "sys/types.h"
 #include "strings.h"
+#include "errno.h"
+#include "sys/_timeval.h"
 
 /* Symbol defined by linker map */
 extern int  _end;              /* start of free memory (as symbol) */
@@ -55,6 +57,74 @@ int _write(int file, char* pData, int len)
     }
     return len;
 }
+extern char _Min_Heap_Size;
+
+void* _sbrk(int  incr) {
+
+    static char* heap_end;		/* Previous end of heap or 0 if none */
+    char* prev_heap_end;
+
+    if (0 == heap_end) {
+        heap_end = &_end;			/* Initialize first time round */
+    }
+
+    prev_heap_end = heap_end;
+    heap_end += incr;
+    //check
+    if (heap_end < (&_end + _Min_Heap_Size)) {
+
+    }
+    else {
+        errno = ENOMEM;
+        return (char*)-1;
+    }
+    return (void*)prev_heap_end;
+}	/* _sbrk () */
+
+int _close(int fd) {
+    return -1;
+}
+
+int _lseek(int fd, int ptr, int dir) {
+    (void)fd;
+    (void)ptr;
+    (void)dir;
+
+    errno = EBADF;
+    return -1;
+}
+
+int _fstat(int fd, struct stat* st) {
+    errno = EBADF;
+    return 0;
+}
+
+int _isatty(int fd) {
+    errno = EBADF;
+    return 0;
+}
+
+#include "sys/times.h"
+extern uint32_t _clock;
+int _times(struct tms* buf)
+{
+    buf->tms_utime = _clock;
+    buf->tms_stime = _clock;
+    buf->tms_cutime = _clock;
+    buf->tms_cstime = _clock;
+
+    return (int)buf->tms_utime;
+}
+
+extern uint32_t _timeSec;
+int _gettimeofday(struct timeval* tv, void* tzvp)
+{
+
+    tv->tv_sec = _timeSec;
+    tv->tv_usec = _timeSec;
+    tv->tv_usec *= 1000000ULL;
+    return 0;  // return non-zero for error
+} // end _gettimeofday()
 
 #ifdef HAVE_INITFINI_ARRAY
 

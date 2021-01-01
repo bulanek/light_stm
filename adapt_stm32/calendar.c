@@ -5,12 +5,19 @@
 #include "calendar_cfg.h"
 #include "CMSIS/device/system_stm32f1xx.h"
 #include "stm32f103xb.h"
+#include "trace_out.h"
+
+#include "time.h"
 
 static void _rtcUnLock(void)
 {
 }
 
 static void _rtcLock(void)
+{
+}
+
+static void _calibrationInit(void)
 {
 }
 
@@ -23,7 +30,7 @@ static void _rtcInit(void)
     while ((RTC->CRL & RTC_CRL_RTOFF) == 0);
     RTC->CRL |= RTC_CRL_CNF;
     RTC->CRH |= RTC_CRH_SECIE; /* seconds interrupt enable*/
-    RTC->PRLL = 0x7FFF;         /* to have 1 sec period*/
+    RTC->PRLL = 0x9C3F;         /* to have 1 sec period (40kHz)*/
     RTC->CRL &= ~RTC_CRL_CNF;
     while ((RTC->CRL & RTC_CRL_RTOFF) == 0);
 }
@@ -46,26 +53,43 @@ void clockInit(void)
     _rtcInit();
 }
 
+extern uint32_t _timeSec;
 /* Date in BinaryCodedDecimal*/
 void setCalendar( const CALENDAR_DATE_S* const pDate, const CALENDAR_TIME_S* const pTime)
 {
+    struct tm time;
+    time.tm_year = pDate->year + 100U;
+    time.tm_mon = pDate->month;
+    time.tm_mday = pDate->day;
+    //time.tm_wday = pDate->weekDay;
+
+    time.tm_hour = pTime->hour;
+    time.tm_min = pTime->minute;
+    time.tm_sec = pTime->second;
+    _timeSec = mktime(&time);
 }
 
 void getCalendar(CALENDAR_DATE_S* pDate, CALENDAR_TIME_S* pTime)
 {
+    clock_t	c = clock()/4;
+    struct tm* timeCurrent;
+
+    TRACE_01(TRACE_LEVEL_LOG, "Clock: %i", c);
+
+    time_t unixtime = time(NULL);
+    timeCurrent = localtime(&unixtime);
     if (pDate != NULL)
     {
-        pDate->day = RTC_DR1->DT * 10U + RTC_DR1->DU;
-        pDate->month = RTC_DR2->MT * 10U + RTC_DR2->MU;
-        pDate->year = RTC_DR3->YT * 10U + RTC_DR3->YU;
-        pDate->weekDay = (uint8_t)(RTC_DR2->WDU*1);
+        pDate->day = timeCurrent->tm_mday;
+        pDate->month = timeCurrent->tm_mon;
+        pDate->year = timeCurrent->tm_year - 100U;
+        pDate->weekDay = timeCurrent->tm_wday;
     }
 
     if (pTime != NULL)
     {
-        pTime->second = RTC_TR1->ST * 10U + RTC_TR1->SU;
-        pTime->minute = RTC_TR2->MNT * 10U + RTC_TR2->MNU;
-        pTime->hour = RTC_TR3->HT * 10U + RTC_TR3->HU;
+        pTime->hour = timeCurrent->tm_hour;
+        pTime->minute = timeCurrent->tm_min;
+        pTime->second = timeCurrent->tm_sec;
     }
-
 }

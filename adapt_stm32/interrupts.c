@@ -8,9 +8,15 @@
 
 
 static uint8_t f_intensity = 0U;
+uint32_t _clock = 0;
+uint32_t _timeSec = 0;
 
 void RTC_IRQHandler(void)
 {
+    __disable_irq();
+    ++_clock;
+    ++_timeSec;
+    __enable_irq();
     CALENDAR_DATE_S date;
     CALENDAR_TIME_S time;
 
