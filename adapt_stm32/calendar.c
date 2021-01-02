@@ -61,7 +61,7 @@ void setCalendar( const CALENDAR_DATE_S* const pDate, const CALENDAR_TIME_S* con
     time.tm_year = pDate->year + 100U;
     time.tm_mon = pDate->month;
     time.tm_mday = pDate->day;
-    //time.tm_wday = pDate->weekDay;
+    time.tm_wday = pDate->weekDay;
 
     time.tm_hour = pTime->hour;
     time.tm_min = pTime->minute;

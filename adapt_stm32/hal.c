@@ -11,7 +11,9 @@ extern int  _end;              /* start of free memory (as symbol) */
 /* Value set by crt0.S */
 extern void* stack;           /* end of free memory */
 
-extern int _Min_Stack_Size;
+extern int _Min_Stack_Size  __asm("_Min_Stack_Size");
+extern int _Min_Heap_Size __asm("_Min_Heap_Size");
+
 extern char end __asm("end");
 
 
@@ -57,10 +59,10 @@ int _write(int file, char* pData, int len)
     }
     return len;
 }
-extern char _Min_Heap_Size;
 
 void* _sbrk(int  incr) {
 
+    int min_heap_size =(int) &_Min_Heap_Size;
     static char* heap_end;		/* Previous end of heap or 0 if none */
     char* prev_heap_end;
 
@@ -71,7 +73,7 @@ void* _sbrk(int  incr) {
     prev_heap_end = heap_end;
     heap_end += incr;
     //check
-    if (heap_end < (&_end + _Min_Heap_Size)) {
+    if (heap_end < (&_end + min_heap_size)) {
 
     }
     else {

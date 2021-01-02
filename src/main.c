@@ -140,8 +140,8 @@ int main() {
 	clockInit();
 
 	NV_DATA_S data;
- //   readFlash(&data, sizeof(data));
-	//setCalendar(&data._date, &data._time);
+    readFlash(&data, sizeof(data));
+	setCalendar(&data._date, &data._time);
 
 	printHelp();
 	volatile int k = 0;

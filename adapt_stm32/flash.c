@@ -4,15 +4,12 @@
 
 #include "stm32f103xb.h"
 
-static const uint16_t RDPRT = 0x00A5;
-
-static const uint32_t ADDRESS_FLASH = 0x08000000;
+static const uint32_t ADDRESS_FLASH = 0x0801FC00; /* Last 1 KB page of flash*/
 
 static void _flashUnlock(void)
 {
     FLASH->KEYR = FLASH_KEY1;
     FLASH->KEYR = FLASH_KEY2;
-
 }
 
 static void _flashLock(void)
