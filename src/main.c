@@ -14,6 +14,7 @@
 #include "flash_com.h"
 #include "hal_com.h"
 
+
 /* needed here for correct asm translation. */
 
 
@@ -157,6 +158,7 @@ int main() {
 	timerInit();
 	flashInit();
 	clockInit();
+	initRunGpio();
 
 	NV_DATA_S data;
     readFlash(&data, sizeof(data));
@@ -169,58 +171,70 @@ int main() {
     CALENDAR_DATE_S calDate;
     CALENDAR_TIME_S calTime;
 
-	do {
-		char a = getchar();
-		if (execute(a) == false)
-		{
-			break;
-		}
-	} while (1);
-
 	do
     {
-        waitForInterrupt();
-		time_t unixtime = time(NULL);
-		struct tm* timeCurrent = localtime(&unixtime);
-
-        getCalendar(&calDate, &calTime);
-        uint8_t intensity = getIntensity(&calDate, &calTime);
-
-        if (f_intensity != intensity)
-        {
-            TRACE_02(TRACE_LEVEL_LOG,"New intensity: %i -> %i",f_intensity, intensity);
-            f_intensity = intensity;
-            sendIntensity(intensity);
-        }
-
-        if (((++f_counter) % 60U) == 0)
-        {
-			TRACE_01(TRACE_LEVEL_LOG, "f_counter = %i", f_counter);
-            do
+        do {
+            if (isRunGpioOn() == true)
             {
+                break;
+            }
+            char a = getchar();
+            if (execute(a) == false)
+            {
+                break;
+            }
 
-                calDate.day = timeCurrent->tm_mday;
-                calDate.month = timeCurrent->tm_mon;
-                calDate.year = timeCurrent->tm_year - 100U;
-                calDate.weekDay = timeCurrent->tm_wday;
-                calTime.hour = timeCurrent->tm_hour;
-                calTime.minute = timeCurrent->tm_min;
-                calTime.second = timeCurrent->tm_sec;
-                if (eraseFlash() == false)
+        } while (1);
+
+        do
+        {
+            if (isRunGpioOn() == false)
+            {
+                break;
+            }
+            waitForInterrupt();
+            time_t unixtime = time(NULL);
+            struct tm* timeCurrent = localtime(&unixtime);
+
+            getCalendar(&calDate, &calTime);
+            uint8_t intensity = getIntensity(&calDate, &calTime);
+
+            if (f_intensity != intensity)
+            {
+                TRACE_02(TRACE_LEVEL_LOG, "New intensity: %i -> %i", f_intensity, intensity);
+                f_intensity = intensity;
+                sendIntensity(intensity);
+            }
+
+            if (((++f_counter) % 60U) == 0)
+            {
+                TRACE_01(TRACE_LEVEL_LOG, "f_counter = %i", f_counter);
+                do
                 {
-                    TRACE_00(TRACE_LEVEL_ERROR, "Erase flash failed");
-                    break;
-                }
-                NV_DATA_S nvData;
-                nvData._date = calDate;
-                nvData._time = calTime;
-                if (writeFlash(&nvData, sizeof(nvData)) == false)
-                {
-                    TRACE_00(TRACE_LEVEL_ERROR, "Write flash failed");
-                    break;
-                }
-                TRACE_00(TRACE_LEVEL_LOG, "Write date to flash");
-            } while (0);
-        }
+
+                    calDate.day = timeCurrent->tm_mday;
+                    calDate.month = timeCurrent->tm_mon;
+                    calDate.year = timeCurrent->tm_year - 100U;
+                    calDate.weekDay = timeCurrent->tm_wday;
+                    calTime.hour = timeCurrent->tm_hour;
+                    calTime.minute = timeCurrent->tm_min;
+                    calTime.second = timeCurrent->tm_sec;
+                    if (eraseFlash() == false)
+                    {
+                        TRACE_00(TRACE_LEVEL_ERROR, "Erase flash failed");
+                        break;
+                    }
+                    NV_DATA_S nvData;
+                    nvData._date = calDate;
+                    nvData._time = calTime;
+                    if (writeFlash(&nvData, sizeof(nvData)) == false)
+                    {
+                        TRACE_00(TRACE_LEVEL_ERROR, "Write flash failed");
+                        break;
+                    }
+                    TRACE_00(TRACE_LEVEL_LOG, "Write date to flash");
+                } while (0);
+            }
+        } while (1);
     } while (1);
 }

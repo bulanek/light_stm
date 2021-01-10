@@ -5,16 +5,16 @@
 #include "calendar_cfg.h"
 
 typedef struct {
-    uint8_t hour;
-    uint8_t minute;
-    uint8_t second;
+    uint16_t hour;
+    uint16_t minute;
+    uint16_t second;
 } CALENDAR_TIME_S;
 
 typedef struct {
-    uint8_t day;
-    uint8_t month;
-    uint8_t year;
-    uint8_t weekDay;
+    uint16_t day;
+    uint16_t month;
+    uint16_t year;
+    uint16_t weekDay;
 } CALENDAR_DATE_S;
 
 typedef enum {

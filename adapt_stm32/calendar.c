@@ -57,16 +57,21 @@ extern uint32_t _timeSec;
 /* Date in BinaryCodedDecimal*/
 void setCalendar( const CALENDAR_DATE_S* const pDate, const CALENDAR_TIME_S* const pTime)
 {
-    struct tm time;
-    time.tm_year = pDate->year + 100U;
-    time.tm_mon = pDate->month;
-    time.tm_mday = pDate->day;
-    time.tm_wday = pDate->weekDay;
+    struct tm timeS;
+    timeS.tm_year = pDate->year + 100U;
+    timeS.tm_mon = pDate->month;
+    timeS.tm_mday = pDate->day;
+    timeS.tm_wday = pDate->weekDay;
 
-    time.tm_hour = pTime->hour;
-    time.tm_min = pTime->minute;
-    time.tm_sec = pTime->second;
-    _timeSec = mktime(&time);
+    timeS.tm_hour = pTime->hour;
+    timeS.tm_min = pTime->minute;
+    timeS.tm_sec = pTime->second;
+    __disable_irq();
+    _timeSec = mktime(&timeS);
+    __enable_irq();
+    time_t unixTime = time(NULL);
+    struct tm* timeCurrent =localtime(&unixTime);
+
 }
 
 void getCalendar(CALENDAR_DATE_S* pDate, CALENDAR_TIME_S* pTime)

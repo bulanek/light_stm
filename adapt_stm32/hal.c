@@ -4,6 +4,8 @@
 #include "strings.h"
 #include "errno.h"
 #include "sys/_timeval.h"
+#include "stdbool.h"
+
 
 /* Symbol defined by linker map */
 extern int  _end;              /* start of free memory (as symbol) */
@@ -25,6 +27,17 @@ void enableInterrupt(void)
 void waitForInterrupt(void)
 {
 	__WFI();
+}
+
+void initRunGpio(void)
+{
+
+}
+
+bool isRunGpioOn(void)
+{
+    bool retVal = true ;
+    return retVal;
 }
 
 int _read(int file, char* pData, int len)
