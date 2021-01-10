@@ -12,6 +12,7 @@ typedef struct {
 
 void flashInit(void);
 
+bool eraseFlash(void);
 bool writeFlash(const void* const pData, const uint16_t length);
 void readFlash(void* const pData, const uint16_t length);
 

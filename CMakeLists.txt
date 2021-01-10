@@ -95,6 +95,16 @@ add_custom_command(
 		COMMENT "Creation of ${PROJECT_NAME}"
 		)
 
+# CMAKE_OBJCOPY defined in the Toolchain.
+add_custom_command(
+		TARGET ${PROJECT_NAME} 
+		POST_BUILD
+		COMMAND ${CMAKE_OBJCOPY} -Obinary ${PROJECT_NAME} ${APP_BIN_NAME}.bin
+		COMMENT "Creation of ${APP_BIN_NAME}.bin "
+		)
+
+
+
 
 # ------------------------------------------------------------------------------
 # DOC 

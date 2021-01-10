@@ -74,7 +74,6 @@ void getCalendar(CALENDAR_DATE_S* pDate, CALENDAR_TIME_S* pTime)
     clock_t	c = clock()/4;
     struct tm* timeCurrent;
 
-    TRACE_01(TRACE_LEVEL_LOG, "Clock: %i", c);
 
     time_t unixtime = time(NULL);
     timeCurrent = localtime(&unixtime);

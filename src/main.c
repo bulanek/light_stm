@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include "time.h"
 
 #include "calendar_com.h"
 #include "trace_out.h"
@@ -53,7 +54,11 @@ static bool execute(const char a)
         {
             CALENDAR_DATE_S date;
             CALENDAR_TIME_S time;
-            getCalendar(&date, &time);
+            //getCalendar(&date, &time);
+            NV_DATA_S dataNV;
+			readFlash(&dataNV, sizeof(dataNV));
+			date = dataNV._date;
+			time = dataNV._time;
             printf("\n Current datetime: (%i.%i.%i, %i) (%i:%i:%i)\n", date.day, date.month, date.year,date.weekDay, time.hour, time.minute, time.second);
         }
         break;
@@ -66,7 +71,7 @@ static bool execute(const char a)
 			printf("\tDay: \n");
 			date.day = (getchar() - (int)'0') * 10;
 			date.day += getchar() - (int)'0';
-			printf("\tMonth: \n");
+ 			printf("\tMonth: \n");
 			date.month= (getchar() - (int)'0') * 10;
 			date.month += getchar() - (int)'0';
 			printf("\tYear: \n");
@@ -88,8 +93,13 @@ static bool execute(const char a)
             NV_DATA_S dataNV;
             dataNV._date = date;
             dataNV._time = time;
-            (void)writeFlash(&dataNV, sizeof(dataNV));
-            printf("\t Calendar set\n");
+			if (eraseFlash() == true)
+			{
+				if (writeFlash(&dataNV, sizeof(dataNV)) == true)
+				{
+					printf("\t Calendar set\n");
+				}
+			}
         }
         break;
         case '3':
@@ -140,11 +150,21 @@ int main() {
 	clockInit();
 
 	NV_DATA_S data;
-    readFlash(&data, sizeof(data));
-	setCalendar(&data._date, &data._time);
+ //   readFlash(&data, sizeof(data));
+	//setCalendar(&data._date, &data._time);
 
+	//char test[] = "Hello";
+	//writeFlash(test, sizeof(test));
+	//eraseFlash();
+	//writeFlash(test, sizeof(test));
 	printHelp();
 	volatile int k = 0;
+	int f_counter = 0U;
+	uint8_t f_intensity = 0U;
+
+    CALENDAR_DATE_S calDate;
+    CALENDAR_TIME_S calTime;
+
 	do {
 		char a = getchar();
 		if (execute(a) == false)
@@ -154,12 +174,50 @@ int main() {
 	} while (1);
 
 	do
-	{
-		waitForInterrupt();
-		getCalendar(&data._date, &data._time);
-		NV_DATA_S nvData;
-		nvData._date = data._date;
-        nvData._time = data._time;
-        writeFlash(&nvData, sizeof(nvData));
+    {
+        waitForInterrupt();
+		time_t unixtime = time(NULL);
+		struct tm* timeCurrent = localtime(&unixtime);
+
+
+        getCalendar(&calDate, &calTime);
+        uint8_t intensity = getIntensity(&calDate, &calTime);
+
+        if (f_intensity != intensity)
+        {
+            TRACE_02(TRACE_LEVEL_LOG,"New intensity: %i -> %i",f_intensity, intensity);
+            f_intensity = intensity;
+            sendIntensity(intensity);
+        }
+
+        if (((++f_counter) % 60U) == 0)
+        {
+			TRACE_01(TRACE_LEVEL_LOG, "f_counter = %i", f_counter);
+            do
+            {
+
+                calDate.day = timeCurrent->tm_mday;
+                calDate.month = timeCurrent->tm_mon;
+                calDate.year = timeCurrent->tm_year - 100U;
+                calDate.weekDay = timeCurrent->tm_wday;
+                calTime.hour = timeCurrent->tm_hour;
+                calTime.minute = timeCurrent->tm_min;
+                calTime.second = timeCurrent->tm_sec;
+                if (eraseFlash() == false)
+                {
+                    TRACE_00(TRACE_LEVEL_ERROR, "Erase flash failed");
+                    break;
+                }
+                NV_DATA_S nvData;
+                nvData._date = calDate;
+                nvData._time = calTime;
+                if (writeFlash(&nvData, sizeof(nvData)) == false)
+                {
+                    TRACE_00(TRACE_LEVEL_ERROR, "Write flash failed");
+                    break;
+                }
+                TRACE_00(TRACE_LEVEL_LOG, "Write date to flash");
+            } while (0);
+        }
     } while (1);
 }

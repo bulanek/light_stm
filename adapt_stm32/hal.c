@@ -39,6 +39,8 @@ int _read(int file, char* pData, int len)
         bytes_read = 1;
         break;
     }
+    while ((USART2->SR & USART_SR_RXNE) != 0U);
+
     return bytes_read;
 }
 
@@ -110,10 +112,12 @@ int _isatty(int fd) {
 extern uint32_t _clock;
 int _times(struct tms* buf)
 {
+    __disable_irq();
     buf->tms_utime = _clock;
     buf->tms_stime = _clock;
     buf->tms_cutime = _clock;
     buf->tms_cstime = _clock;
+    __enable_irq();
 
     return (int)buf->tms_utime;
 }
@@ -121,9 +125,10 @@ int _times(struct tms* buf)
 extern uint32_t _timeSec;
 int _gettimeofday(struct timeval* tv, void* tzvp)
 {
-
+    __disable_irq();
     tv->tv_sec = _timeSec;
     tv->tv_usec = _timeSec;
+    __enable_irq();
     tv->tv_usec *= 1000000ULL;
     return 0;  // return non-zero for error
 } // end _gettimeofday()
