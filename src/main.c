@@ -34,12 +34,13 @@ static void printHelp(void)
 	printf("\n");
 	printf("\nConfiguration for light:\n");
 	printf("\th - this help\n");
-	printf("\t1 - Get datetime\n");
-	printf("\t2 - Set datetime\n");
-	printf("\t3 - Send intensity\n");
-	printf("\t4 - Get intensity regarding time\n");
-	printf("\t5 - Check if summer time\n");
-	printf("\t6 - Continue (halt)\n");
+	printf("\t1 - Get datetime from flash\n");
+	printf("\t2 - Set datetime to flash\n");
+	printf("\t3 - Get datetime\n");
+	printf("\t4 - Send intensity\n");
+	printf("\t5 - Get intensity regarding time\n");
+	printf("\t6 - Check if summer time\n");
+	printf("\t7 - Continue (halt)\n");
 }
 
 static bool execute(const char a)
@@ -54,7 +55,6 @@ static bool execute(const char a)
         {
             CALENDAR_DATE_S date;
             CALENDAR_TIME_S time;
-            //getCalendar(&date, &time);
             NV_DATA_S dataNV;
 			readFlash(&dataNV, sizeof(dataNV));
 			date = dataNV._date;
@@ -102,7 +102,15 @@ static bool execute(const char a)
 			}
         }
         break;
-        case '3':
+		case '3':
+		{
+            CALENDAR_DATE_S date;
+            CALENDAR_TIME_S time;
+            getCalendar(&date, &time);
+            printf("\n Current datetime: (%i.%i.%i, %i) (%i:%i:%i)\n", date.day, date.month, date.year,date.weekDay, time.hour, time.minute, time.second);
+		}
+		break;
+        case '4':
         {
             printf("\tTwo digits (00-99): \n");
             int intensity = (getchar() - (int)'0') * 10;
@@ -111,7 +119,7 @@ static bool execute(const char a)
 			TRACE_01(TRACE_LEVEL_LOG, "Sent intensity %i", intensity);
 		}
 		break;
-		case '4':
+		case '5':
 		{
 			CALENDAR_DATE_S date;
 			CALENDAR_TIME_S time;
@@ -119,14 +127,14 @@ static bool execute(const char a)
 			TRACE_01(TRACE_LEVEL_LOG,"Intensity: %i", getIntensity(&date, &time));
 		}
 		break;
-		case '5':
+		case '6':
 		{
 			CALENDAR_DATE_S date;
 			getCalendar(&date, NULL);
 			printf("Is summertime: %i\n", isSummerTime(&date));
 		}
 		break;
-		case '6':
+		case '7':
 		{
 			retVal = false;
 			printf("Continue \n");
@@ -134,6 +142,7 @@ static bool execute(const char a)
 		break;
         default:
             TRACE_01(TRACE_LEVEL_ERROR, "Unexpected choice %i", (int)a);
+			break;
     }
 	return retVal;
 }
@@ -150,13 +159,8 @@ int main() {
 	clockInit();
 
 	NV_DATA_S data;
- //   readFlash(&data, sizeof(data));
-	//setCalendar(&data._date, &data._time);
-
-	//char test[] = "Hello";
-	//writeFlash(test, sizeof(test));
-	//eraseFlash();
-	//writeFlash(test, sizeof(test));
+    readFlash(&data, sizeof(data));
+	setCalendar(&data._date, &data._time);
 	printHelp();
 	volatile int k = 0;
 	int f_counter = 0U;
@@ -178,7 +182,6 @@ int main() {
         waitForInterrupt();
 		time_t unixtime = time(NULL);
 		struct tm* timeCurrent = localtime(&unixtime);
-
 
         getCalendar(&calDate, &calTime);
         uint8_t intensity = getIntensity(&calDate, &calTime);
