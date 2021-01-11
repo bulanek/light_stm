@@ -1,12 +1,17 @@
 #ifndef _HAL_COM_H_
 #define _HAL_COM_H_
 
+typedef enum
+{
+    RUN_MODE = 0,
+    CFG_MODE = 1
+} DEV_MODE_E;
 
 void enableInterrupt();
 void waitForInterrupt(void);
 
 void initRunGpio(void);
-bool isRunGpioOn(void);
+DEV_MODE_E GetMode(void);
 
 
 

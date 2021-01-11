@@ -164,6 +164,7 @@ int main() {
     readFlash(&data, sizeof(data));
 	setCalendar(&data._date, &data._time);
 	printHelp();
+
 	volatile int k = 0;
 	int f_counter = 0U;
 	uint8_t f_intensity = 0U;
@@ -174,8 +175,9 @@ int main() {
 	do
     {
         do {
-            if (isRunGpioOn() == true)
+            if (GetMode() == RUN_MODE)
             {
+				TRACE_00(TRACE_LEVEL_LOG, "In Run mode");
                 break;
             }
             char a = getchar();
@@ -183,13 +185,14 @@ int main() {
             {
                 break;
             }
-
         } while (1);
 
         do
         {
-            if (isRunGpioOn() == false)
+            if (GetMode() == CFG_MODE)
             {
+				printHelp();
+				TRACE_00(TRACE_LEVEL_LOG, "In Cfg mode");
                 break;
             }
             waitForInterrupt();

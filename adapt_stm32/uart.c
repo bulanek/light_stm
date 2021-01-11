@@ -11,9 +11,6 @@ void uartDebugInit(void)
     RCC->APB1RSTR &= ~RCC_APB1RSTR_USART2RST;
     RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
     RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;
-    //RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;
-
-    RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
 
     USART2->CR1 = 0;
     USART2->CR2 = 0;
@@ -29,7 +26,6 @@ void uartDebugInit(void)
 
     //enable uart
     USART2->CR1 |= USART_CR1_UE;
-    USART1->CR1 |= USART_CR1_UE;
 
     /*USARDIV = 16 MHz / (required UART clock * 8x (2-OVER8))  OVER8 = 0*/
     /* UPDATE FREQ!  fr 14.5 MHz -> value USARDIV = 7.8668 ->  Mantisa = 7, Fraction*16 = 14 */

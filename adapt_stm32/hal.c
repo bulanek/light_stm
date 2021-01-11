@@ -4,6 +4,7 @@
 #include "strings.h"
 #include "errno.h"
 #include "sys/_timeval.h"
+#include "hal_com.h"
 #include "stdbool.h"
 
 
@@ -29,14 +30,38 @@ void waitForInterrupt(void)
 	__WFI();
 }
 
+/* PA9 - input (pull up) 0 - run mode, undef -> 1 ->cfg mode */
 void initRunGpio(void)
 {
+    RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;
 
+    GPIOA->CRH &= ~GPIO_CRH_MODE9;  /* input mode */
+
+    GPIOA->CRH &= ~GPIO_CRH_CNF9;
+    GPIOA->CRH |= GPIO_CRH_CNF9_1; /* floating input - push-pull*/
+
+    GPIOA->ODR |= GPIO_ODR_ODR9;    /* in case input pull up-down: input pull-up*/
 }
 
-bool isRunGpioOn(void)
+DEV_MODE_E GetMode(void)
 {
-    bool retVal = true ;
+    DEV_MODE_E retVal;
+    int counterIsRunMode = 0;
+    for (int i = 0; i < 100;++i)
+    {
+        if ((GPIOA->IDR & GPIO_IDR_IDR9) == 0)
+        {
+            ++counterIsRunMode;
+        }
+    }
+    if(counterIsRunMode > 50)
+    {
+        retVal = RUN_MODE;
+    }
+    else
+    {
+        retVal = CFG_MODE;
+    }
     return retVal;
 }
 
