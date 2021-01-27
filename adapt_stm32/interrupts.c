@@ -20,3 +20,8 @@ void RTC_IRQHandler(void)
 
     RTC->CRL &= ~RTC_CRL_SECF; /* ack*/
 }
+
+void TIM5_IRQHandler(void)
+{
+
+}

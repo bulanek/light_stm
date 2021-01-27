@@ -2,8 +2,9 @@ set(CMAKE_C_FLAGS_INIT "")
 SET(CMAKE_EXE_LINKER_FLAGS_INIT "-msoft-float  -mstm32 ")
 add_definitions("-DTHUMB_INTERWORK")
 add_definitions("-DSTM32")
-add_definitions("-DSTM32F103xE")
 
+add_definitions("-DSTM32F103xE")
+set(SOURCES ${SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/adapt_stm32/CMSIS/device/startup_stm32f103xe.s)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -msoft-float ")
 
@@ -15,7 +16,6 @@ foreach(module adapt_stm32 )
 	list(APPEND SOURCES ${TMP_SOURCES})
 endforeach(module)
 
-set(SOURCES ${SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/adapt_stm32/CMSIS/device/startup_stm32f103xb.s)
 
 
 include_directories(

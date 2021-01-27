@@ -19,6 +19,14 @@ static void _rtcLock(void)
 
 static void _calibrationInit(void)
 {
+    IRQn_Type type = TIM5_IRQn;
+    NVIC_EnableIRQ(type);
+    NVIC_SetPriority(type, 15U);
+
+    RCC->APB1ENR |= RCC_APB1ENR_TIM5EN;
+    AFIO->MAPR |= AFIO_MAPR_TIM5CH4_IREMAP;
+    TIM5->DIER |= TIM_DIER_CC4IE;
+    TIM5->CR1 |= TIM_CR1_CEN;
 }
 
 static void _rtcInit(void)
