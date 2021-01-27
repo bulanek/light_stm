@@ -7,7 +7,7 @@
 
 #include "time.h"
 
-#include "CMSIS/device/stm32f103xb.h"
+#include "CMSIS/device/stm32f1xx.h"
 
 
 uint32_t _clock = 0;
