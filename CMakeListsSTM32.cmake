@@ -2,7 +2,7 @@ set(CMAKE_C_FLAGS_INIT "")
 SET(CMAKE_EXE_LINKER_FLAGS_INIT "-msoft-float  -mstm32 ")
 add_definitions("-DTHUMB_INTERWORK")
 add_definitions("-DSTM32")
-add_definitions("-DSTM32F103xB")
+add_definitions("-DSTM32F103xE")
 
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -msoft-float ")

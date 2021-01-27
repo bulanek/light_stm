@@ -1,5 +1,5 @@
 #include "led_com.h"
-#include "stm32f103xb.h"
+#include "stm32f1xx.h"
 
 /* Timer 1, channel 1,  PA8*/
 void timerInit(void) 

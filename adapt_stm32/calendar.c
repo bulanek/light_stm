@@ -4,7 +4,7 @@
 #include "calendar_com.h"
 #include "calendar_cfg.h"
 #include "CMSIS/device/system_stm32f1xx.h"
-#include "stm32f103xb.h"
+#include "stm32f1xx.h"
 #include "trace_out.h"
 
 #include "time.h"

@@ -2,7 +2,7 @@
 #include "trace_out.h"
 #include "string.h"
 
-#include "stm32f103xb.h"
+#include "stm32f1xx.h"
 
 static const uint32_t ADDRESS_FLASH = 0x800fc00; /* 1 KB page of flash*/
 
