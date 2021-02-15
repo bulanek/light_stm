@@ -14,7 +14,7 @@
       "variables": [
         {
           "name": "CMAKE_MAKE_PROGRAM",
-          "value": "C:\\\\git\\\\mf_devkit\\Tools\\MinGW\\bin\\mingw32-make.exe",
+          "value": "C:\\\\git\\\\mf_devkit\\mf_tools\\MinGW\\bin\\mingw32-make.exe",
           "type": "STRING"
         },
         {
@@ -43,7 +43,7 @@
       "variables": [
         {
           "name": "CMAKE_MAKE_PROGRAM",
-          "value": "C:\\\\git\\\\mf_dev\\Tools\\MinGW\\bin\\mingw32-make.exe",
+          "value": "C:\\\\git\\\\mf_dev\\mf_tools\\MinGW\\bin\\mingw32-make.exe",
           "type": "STRING"
         },
         {

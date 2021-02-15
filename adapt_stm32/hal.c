@@ -25,22 +25,27 @@ void enableInterrupt(void)
 	__enable_irq();
 }
 
+void disableInterrupt(void)
+{
+	__disable_irq();
+}
+
 void waitForInterrupt(void)
 {
 	__WFI();
 }
 
-/* PA9 - input (pull up) 0 - run mode, undef -> 1 ->cfg mode */
+/* PA2 - input (pull up) 0 - run mode, undef -> 1 ->cfg mode */
 void initRunGpio(void)
 {
     RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;
 
-    GPIOA->CRH &= ~GPIO_CRH_MODE9;  /* input mode */
+    GPIOA->CRL &= ~GPIO_CRL_MODE2;  /* input mode */
 
-    GPIOA->CRH &= ~GPIO_CRH_CNF9;
-    GPIOA->CRH |= GPIO_CRH_CNF9_1; /* floating input - push-pull*/
+    GPIOA->CRL &= ~GPIO_CRL_CNF2;
+    GPIOA->CRL |= GPIO_CRL_CNF2_1; /* floating input - push-pull*/
 
-    GPIOA->ODR |= GPIO_ODR_ODR9;    /* in case input pull up-down: input pull-up*/
+    GPIOA->ODR |= GPIO_ODR_ODR2;    /* in case input pull up-down: input pull-up*/
 }
 
 DEV_MODE_E GetMode(void)
@@ -49,7 +54,7 @@ DEV_MODE_E GetMode(void)
     int counterIsRunMode = 0;
     for (int i = 0; i < 100;++i)
     {
-        if ((GPIOA->IDR & GPIO_IDR_IDR9) == 0)
+        if ((GPIOA->IDR & GPIO_IDR_IDR2) == 0)
         {
             ++counterIsRunMode;
         }
@@ -71,13 +76,13 @@ int _read(int file, char* pData, int len)
 
     for (bytes_read = 0; bytes_read < len; ++bytes_read)
     {
-        while ((USART2->SR & USART_SR_RXNE) == 0U);
-        *pData = (char)USART2->DR;
+        while ((USART1->SR & USART_SR_RXNE) == 0U);
+        *pData = (char)USART1->DR;
         ++pData;
         bytes_read = 1;
         break;
     }
-    while ((USART2->SR & USART_SR_RXNE) != 0U);
+    while ((USART1->SR & USART_SR_RXNE) != 0U);
 
     return bytes_read;
 }
@@ -88,13 +93,13 @@ int _write(int file, char* pData, int len)
     int bytes_written;
     for (bytes_written = 0; bytes_written < len; ++bytes_written)
     {
-        while ((USART2->SR & USART_SR_TXE) == 0U);
+        while ((USART1->SR & USART_SR_TXE) == 0U);
         volatile uint8_t data = pTmpData[bytes_written];
-        USART2->DR = data;
+        USART1->DR = data;
         if (pTmpData[bytes_written] == '\n')
         {
-            while ((USART2->SR & USART_SR_TXE) == 0U);
-            USART2->DR = '\r';
+            while ((USART1->SR & USART_SR_TXE) == 0U);
+            USART1->DR = '\r';
         }
     }
     return len;
@@ -143,6 +148,21 @@ int _fstat(int fd, struct stat* st) {
 
 int _isatty(int fd) {
     errno = EBADF;
+    return 0;
+}
+
+int _kill(int pid, int sig)
+{
+    return 0;
+}
+
+int _exit(int code)
+{
+    return 0;
+}
+
+int _getpid(void)
+{
     return 0;
 }
 

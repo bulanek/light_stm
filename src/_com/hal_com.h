@@ -7,7 +7,8 @@ typedef enum
     CFG_MODE = 1
 } DEV_MODE_E;
 
-void enableInterrupt();
+void enableInterrupt(void);
+void disableInterrupt(void);
 void waitForInterrupt(void);
 
 void initRunGpio(void);

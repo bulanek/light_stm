@@ -53,7 +53,7 @@
         "traceResponse": true,
         "engineLogging": true
       },
-      "miDebuggerPath": "C:\\git\\mf_dev\\Tools\\gnu_tools_arm_embedded_8_2018_q4_major\\bin\\arm-none-eabi-gdb.exe",
+      "miDebuggerPath": "C:\\git\\mf_dev\\mf_tools\\gnu_tools_arm_embedded_10_2020_q4_major\\bin\\arm-none-eabi-gdb.exe",
       "MIMode": "gdb",
       "name": "LIGHT.exe",
       "program": "C:\\Users\\z003tecs\\AppData\\Local\\Temp\\light_stm32\\LIGHT",

@@ -26,6 +26,9 @@ extern void _overflowInterrupt(void) __interrupt(TIM1_UPDATE_OVERFLOW_TRIGER_IRQ
 extern void _captureInterrupt(void) __interrupt(TIM1_CAPTURE_IRQ);
 #endif /* STM8 */
 
+extern uint32_t difference;
+extern uint32_t diff128;
+
 void _init(void)
 {
 }
@@ -41,7 +44,8 @@ static void printHelp(void)
 	printf("\t4 - Send intensity\n");
 	printf("\t5 - Get intensity regarding time\n");
 	printf("\t6 - Check if summer time\n");
-	printf("\t7 - Continue (halt)\n");
+	printf("\t7 - timer diff - calibration\n");
+	printf("\t8 - Continue (halt)\n");
 }
 
 static bool execute(const char a)
@@ -137,6 +141,17 @@ static bool execute(const char a)
 		break;
 		case '7':
 		{
+			disableInterrupt();
+			volatile uint32_t diffSnap = difference;
+			volatile uint32_t diff128Snap = diff128;
+			enableInterrupt();
+			printf("timer diff %u\n", diffSnap);
+			printf("timer diff 128 %u\n", diff128Snap);
+
+		}
+		break;
+		case '8':
+		{
 			retVal = false;
 			printf("Continue \n");
 		}
@@ -159,7 +174,7 @@ int main() {
 	flashInit();
 	clockInit();
 	initRunGpio();
-
+//
 	NV_DATA_S data;
     readFlash(&data, sizeof(data));
 	setCalendar(&data._date, &data._time);
@@ -177,7 +192,7 @@ int main() {
         do {
             if (GetMode() == RUN_MODE)
             {
-				TRACE_00(TRACE_LEVEL_LOG, "In Run mode");
+                TRACE_00(TRACE_LEVEL_LOG, "In Run mode");
                 break;
             }
             char a = getchar();
@@ -214,7 +229,6 @@ int main() {
                 TRACE_01(TRACE_LEVEL_LOG, "f_counter = %i", f_counter);
                 do
                 {
-
                     calDate.day = timeCurrent->tm_mday;
                     calDate.month = timeCurrent->tm_mon;
                     calDate.year = timeCurrent->tm_year - 100U;

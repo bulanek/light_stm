@@ -24,9 +24,15 @@ static void _calibrationInit(void)
     NVIC_SetPriority(type, 15U);
 
     RCC->APB1ENR |= RCC_APB1ENR_TIM5EN;
-    AFIO->MAPR |= AFIO_MAPR_TIM5CH4_IREMAP;
+    RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;
+
+    TIM5->CCMR2 |= TIM_CCMR2_CC4S_0; /* CC4 channel is configured as input, IC4 is mapped on TI4 */
     TIM5->DIER |= TIM_DIER_CC4IE;
+    TIM5->CCER |= TIM_CCER_CC4E;
+
+    //TIM5->SR &= ~TIM_SR_CC4IF;
     TIM5->CR1 |= TIM_CR1_CEN;
+    AFIO->MAPR |= AFIO_MAPR_TIM5CH4_IREMAP;
 }
 
 static void _rtcInit(void)
@@ -38,7 +44,9 @@ static void _rtcInit(void)
     while ((RTC->CRL & RTC_CRL_RTOFF) == 0);
     RTC->CRL |= RTC_CRL_CNF;
     RTC->CRH |= RTC_CRH_SECIE; /* seconds interrupt enable*/
-    RTC->PRLL = 0x9C3F;         /* to have 1 sec period (40kHz)*/
+//    RTC->PRLL = 0x9C3F;         /* to have 1 sec period (40kHz)*/
+    RTC->PRLL = 0x9A6F;         /* to have 1 sec period (40kHz) -> 9A70 - 1*/
+
     RTC->CRL &= ~RTC_CRL_CNF;
     while ((RTC->CRL & RTC_CRL_RTOFF) == 0);
 }
@@ -58,7 +66,10 @@ void clockInit(void)
 
     while ((RCC->CSR & RCC_CSR_LSIRDY) == 0);
 
+
+    _calibrationInit();
     _rtcInit();
+    
 }
 
 extern uint32_t _timeSec;

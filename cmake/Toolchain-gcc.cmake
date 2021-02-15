@@ -6,7 +6,7 @@ set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR arm)
 
 if (WIN32)
-	set(COMPILER_HOME "C:/git/mf_dev/Tools/gnu_tools_arm_embedded_9_2019_q4_major")
+	set(COMPILER_HOME "C:/git/mf_dev/mf_tools/gnu_tools_arm_embedded_10_2020_q4_major")
 	set(TOOL_EXECUTABLE_SUFFIX ".exe")
 endif()
 
