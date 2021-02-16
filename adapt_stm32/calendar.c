@@ -27,6 +27,7 @@ static void _calibrationInit(void)
     RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;
 
     TIM5->CCMR2 |= TIM_CCMR2_CC4S_0; /* CC4 channel is configured as input, IC4 is mapped on TI4 */
+    TIM5->CCMR2 |= TIM_CCMR2_IC4PSC_1 | TIM_CCMR2_IC4PSC_0; /* prescaler every 8 events.*/
     TIM5->DIER |= TIM_DIER_CC4IE;
     TIM5->CCER |= TIM_CCER_CC4E;
 
@@ -45,29 +46,43 @@ static void _rtcInit(void)
     RTC->CRL |= RTC_CRL_CNF;
     RTC->CRH |= RTC_CRH_SECIE; /* seconds interrupt enable*/
 //    RTC->PRLL = 0x9C3F;         /* to have 1 sec period (40kHz)*/
-    RTC->PRLL = 0x9A6F;         /* to have 1 sec period (40kHz) -> 9A70 - 1*/
+//    RTC->PRLL = 0x9A6F;         /* to have 1 sec period (40kHz) -> 9A70 - 1*/
+    RTC->PRLL = 0x7FFF;         /* to have 1 sec period (32768kHz) -> 8000 - 1*/
 
     RTC->CRL &= ~RTC_CRL_CNF;
     while ((RTC->CRL & RTC_CRL_RTOFF) == 0);
 }
 
+/* PC14 - OSC_IN, PC15 - OSC_OUT*/
 void clockInit(void)
 {
-//    SystemInit();
-    RCC->CR |= RCC_CR_HSION;
-    RCC->CSR |= RCC_CSR_LSION;
+    //SystemInit();
+    //RCC->CR |= RCC_CR_HSION;
 
     /* Backup registers and RTC enable*/
+
     RCC->APB1ENR |= RCC_APB1ENR_PWREN | RCC_APB1ENR_BKPEN;
+    RCC->APB2ENR |= RCC_APB2ENR_IOPCEN;
+
+    GPIOC->CRH &= ~GPIO_CRH_MODE15; 
+    GPIOC->CRH |= GPIO_CRH_MODE15_1; /* output max speed 2 MHz*/
+
+    GPIOC->CRH &= ~GPIO_CRH_CNF15; 
+    GPIOC->CRH |= GPIO_CRH_CNF15_1; /* alternate output*/
+
     PWR->CR |= PWR_CR_DBP;
-
+    RCC->BDCR |= RCC_BDCR_LSEON;
     RCC->BDCR |= RCC_BDCR_RTCEN;
-    RCC->BDCR |= RCC_BDCR_RTCSEL_1; /* LSI oscilator*/
 
-    while ((RCC->CSR & RCC_CSR_LSIRDY) == 0);
+    RCC->BDCR |= RCC_BDCR_RTCSEL_LSE; /* LSE oscilator*/
 
 
-    _calibrationInit();
+
+
+    //while ((RCC->CSR & RCC_CSR_LSIRDY) == 0);
+    while ((RCC->BDCR & RCC_BDCR_LSERDY) == 0);
+
+    //_calibrationInit();
     _rtcInit();
     
 }

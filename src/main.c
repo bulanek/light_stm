@@ -27,7 +27,7 @@ extern void _captureInterrupt(void) __interrupt(TIM1_CAPTURE_IRQ);
 #endif /* STM8 */
 
 extern uint32_t difference;
-extern uint32_t diff128;
+extern uint32_t diff256;
 
 void _init(void)
 {
@@ -143,10 +143,10 @@ static bool execute(const char a)
 		{
 			disableInterrupt();
 			volatile uint32_t diffSnap = difference;
-			volatile uint32_t diff128Snap = diff128;
+			volatile uint32_t diff256Snap = diff256;
 			enableInterrupt();
 			printf("timer diff %u\n", diffSnap);
-			printf("timer diff 128 %u\n", diff128Snap);
+			printf("timer diff 256 %u\n", diff256Snap);
 
 		}
 		break;
